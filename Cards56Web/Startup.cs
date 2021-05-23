@@ -34,6 +34,7 @@ namespace Cards56Web
                 .AllowAnyMethod()
                 .AllowCredentials());
             app.UseDefaultFiles();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseEndpoints(endpoints =>
