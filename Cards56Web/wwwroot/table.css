@@ -1,0 +1,209 @@
+html {
+	background-color: #092E20;
+}
+
+body {
+	position: relative;
+	border-radius: 8px;
+	box-shadow: black 0px 0px 2px;
+	width: 1000px;
+	background: #FFF;
+	margin: 0px auto;
+	border: solid 1px black;
+	font-family: arial, sans-serif;
+	padding: 0px;
+}
+
+#card-table {
+	background-image: url('img/table.jpg');
+	background-size: cover;
+	height: 700px;
+	width: 1000px;
+	border: solid 6px brown;
+	border-radius: 8px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-ms-border-radius: 8px;
+	-o-border-radius: 8px;
+	box-shadow: #111 1px 1px 2px;
+}
+
+.koolies {
+    position: absolute;
+    top: 10px;
+    height: 25px;
+    width: 320px;
+    display: block;
+    /* border: 1px solid white; */
+}
+
+.koolies.myteam {
+    left: 8px;
+}
+
+.koolies.otherteam {
+    left: 672px;
+}
+
+.koolie {
+    width: 23px;
+    height: 23px;
+    margin-right: 3px;
+    background-size: contain;
+    display: block;
+    /* border: 1px solid white; */
+}
+
+.koolie.myteam {
+    float: left;
+}
+
+.koolie.otherteam {
+    float: right;
+}
+
+.koolie.team0 {
+    background-image: url('img/240px-Glass_button_blue.svg.png');
+}
+
+.koolie.team1 {
+    background-image: url('img/240px-Glass_button_red.svg.png');
+}
+
+.koolie.hidden {
+    display: none;
+}
+
+.score {
+    position: absolute;
+    top: 40px;
+    overflow: hidden;
+    font-size: 24px;
+    /* font-weight: bold; */
+    text-align: center;
+    display: block;
+    /* border: 1px solid white; */
+}
+
+.score-myteam {
+    left: 10px;
+}
+
+.score-otherteam {
+    right: 10px;
+}
+
+.score.team0 {
+    color: whitesmoke;
+}
+
+.score.team1 {
+    color: whitesmoke;
+}
+
+.center-display {
+    position: absolute;
+    left: 410px;
+    top: 300px;
+    width: 180px;
+    height: 50px;
+    color: yellow;
+    overflow: hidden;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    z-index: 501;
+    /* border: 1px solid white; */
+}
+
+.center-display.hidden {
+    display: none;
+}
+
+.version-label {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    color: lightgreen;
+    font-size: 12px;
+}
+
+.table-buttons {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+}
+
+.table-button {
+    background-color: lightgreen;
+    /* Green */
+    border: 1px solid #4CAF50;
+    color: #227725;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    float: right;
+    height: 25px;
+    margin-right: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-radius: 4px;
+}
+
+.table-button:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.logout {
+    margin-right: 0px;
+}
+
+.table-button.hidden {
+    visibility: hidden;
+}
+
+.alert {
+    position: absolute;
+    left: 18%;
+    top: 30%;
+    width: 60%;
+    padding: 20px;
+    background-color: #ff9800;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.6s;
+    margin-bottom: 15px;
+    display: none;
+    z-index: 2000;
+}
+
+/* .alert.visible {
+    opacity: 0;
+    display: none;
+} */
+
+.alert-msg {
+    width: 90%;
+    float: left;
+    color: white;
+    /* border: 1px solid white; */
+}
+
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    width: 15px;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+    /* border: 1px solid white; */
+}
+
+.closebtn:hover {
+    color: black;
+}

@@ -1,0 +1,66 @@
+.bid_panel {
+    position: absolute;
+    left: 224px;
+    top: 225px;
+    padding: 5px;
+    background-color: rgb(168, 255, 168, 0.80);
+    border: 1px solid black;
+    border-radius: 15px;
+    display: none;
+    z-index: 500;
+}
+
+.bidtable {
+    margin: 0 auto;
+    /* margin: 0 auto 0 auto */
+}
+
+.bidbtn {
+    background-color: lightgreen; /* Green */
+    border: 1px solid #4CAF50;
+    color: #227725;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    float: right;
+    height: 35px;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-radius: 8px;
+} 
+
+.bidbtn:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.bidbtn-bid {
+    width: 40px;
+}
+
+.bidbtn-thani {
+    margin-left: 10px;
+    width: 70px;
+}
+
+.bidbtn-thani:hover {
+    background-color: crimson;
+    color: white;
+}
+
+.bidbtn-pass {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 175px;
+}
+
+.bidbtn-disable {
+    background-color: rgb(190, 220, 190);
+    border: 1px solid rgb(165, 165, 165);
+    color: rgb(165, 165, 165);
+}
+
+.bidbtn-disable:hover {
+    background-color: rgb(190, 220, 190);
+    color: rgb(165, 165, 165);
+}

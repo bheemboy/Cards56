@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>56cards.net</title>
+  <!-- CSS -->
+  <!-- JQUERY UI CSS-->
+  <link rel="stylesheet" type="text/css" href="table.css">
+  <link rel="stylesheet" type="text/css" href="bid_panel.css">
+  <link rel="stylesheet" type="text/css" href="player.css">
+  <script src="lib/jquery-1.7.min.js"></script>
+  <script src="lib/signalr.js"></script>
+  <script src="lib/cards.js"></script>
+</head>
+</head>
+
+<body>
+  <div id="card-table">
+  </div>
+  <!-- load this at the bottom so the #card-table element exists -->
+  <script src="bid_panel.js"></script>
+  <script src="player.js"></script>
+  <script src="game.js"></script>
+  <script src="table.js"></script>
+</body>
+
+<script lang="js">
+let username = "";
+let tabletype = 0;
+let tablename = "";
+let lang = "en-US";
+let player_count = 4;
+let players = [];
+let table;
+let main_div = '#card-table';
+let game;
+let watch=false;
+$(document).ready(function ()
+{
+	username = getParamValue("username");
+	tabletype = parseInt(getParamValue("tabletype"));
+	tablename = getParamValue("tablename");
+	lang = getParamValue("lang");
+	let w = getParamValue("watch");
+	watch = (w != null && w=='true')?true:false;
+
+	player_count = (tabletype==0)? 4: (tabletype == 1)? 6: 8;
+
+	table = new Table(main_div, player_count);
+	bidPanel = new BidPanel(main_div);
+
+	for (let i = 0; i < player_count; i++)
+	{
+		players.push(new Player(main_div, tabletype, i));
+	}
+
+	game = new Game(username, tabletype, tablename, lang, players, table, bidPanel, watch);
+});
+
+function getParamValue(param)
+{
+	let urlParams = new URLSearchParams(window.location.search);
+	return urlParams.get(param);
+}
+</script>
+
+</html>

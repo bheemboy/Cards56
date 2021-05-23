@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>56cards.net</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="css/login_util.css">
+	<link rel="stylesheet" type="text/css" href="css/login_main.css">
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<script src="lib/jquery-1.7.min.js"></script>
+</head>
+
+<body>
+	<div class="container-login100">
+		<div class="wrap-login100 p-l-55 p-r-55 p-t-80 p-b-30">
+			<form class="login100-form validate-form" id="loginform" action="table.html">
+				<span class="login100-form-title p-b-37">
+					Sign In
+				</span>
+
+				<div class="wrap-input100 validate-input m-b-20" data-validate="Enter username">
+					<input class="input100" type="text" id="username" name="username" placeholder="Enter your name">
+					<span class="focus-input100"></span>
+				</div>
+				<!--
+				<div class="wrap-input100 validate-input m-b-25" data-validate = "Enter password">
+					<input class="input100" type="password" name="pass" placeholder="password">
+					<span class="focus-input100"></span>
+				</div>
+			   -->
+				<div class="selectWrapper m-b-20">
+					<select class="selectBox" name="tabletype" id="tabletype">
+						<option value="0">4-Player Game</option>
+						<option value="1">6-Player Game</option>
+						<option value="2">8-Player Game</option>
+						<!--<option  value="2">56 - 6 Players - Open Trump</option>-->
+					</select>
+				</div>
+
+				<div class="wrap-input100 validate-input m-b-20" data-validate="Private table">
+					<input class="input100" type="text" name="tablename" id="tablename"
+						placeholder="Private table name (optional)">
+					<span class="focus-input100"></span>
+				</div>
+				<div class="container-login100-form-btn">
+					<button id="loginbtn" class="login100-form-btn">
+						Play
+					</button>
+					<button id="watchbtn" class="login100-form-btn">
+						Watch
+					</button>
+				</div>
+				<div>
+					<span>Language:</span>
+					<input type="radio" id="mal" name="lang" value="ml" checked>
+					<label for="mal">മലയാളം</label>
+
+					<input type="radio" id="eng" name="lang" value="en">
+					<label for="eng">English</label>
+				</div>
+				<input type="hidden" id="watch" name="watch" value="false">
+				<!--
+				<div class="text-center">
+					<a href="#" class="txt2 hov1">
+						Sign Up
+					</a>
+				</div>
+				-->
+			</form>
+
+
+		</div>
+	</div>
+	<script>
+		$(document).ready(function ()
+		{
+			var tableType = getParamValue("tabletype");
+			var tableName = getParamValue("tablename");
+			if (tableType)
+			{
+				var s = "#tabletype option[value='" + tableType + "']";
+				$(s).attr("selected", "selected");
+				$("#tabletype").prop('disabled', true);
+			}
+			if (tableName)
+			{
+				$("#tablename").val(tableName);
+			}
+			$("#loginbtn").click(function(event){
+				prepare(false,event);
+			});
+			$("#watchbtn").click(function(event){
+				prepare(true,event);
+			});
+			/*
+			$("#loginform").submit(function (e)
+			{
+				if ($("#username").val().length > 0)
+				{
+					$("#tabletype").prop('disabled', false);
+					$("#tablename").prop('disabled', false);
+				} else
+				{
+					alert("Please specify a user name");
+					event.preventDefault();
+				}
+			});
+			*/
+		});
+
+		function prepare(watch,event){
+			if ($("#username").val().length > 0){
+					$("#tabletype").prop('disabled', false);
+					$("#tablename").prop('disabled', false);
+					
+					if(watch){
+						$("#watch").val('true');
+					}
+					else {
+						$("#watch").val('false');
+					}
+			} 
+			else {
+				alert("Please specify a user name");
+				event.preventDefault();
+			}
+		}
+		function getParamValue(param)
+		{
+			var urlParams = new URLSearchParams(window.location.search);
+			return urlParams.get(param);
+		}
+	</script>
+</body>
+
+</html>

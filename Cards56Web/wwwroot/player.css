@@ -1,0 +1,279 @@
+.player {
+	position: absolute;
+	bottom: 0px;
+	left: 295px;
+	width: 430px;
+	height: 105px;
+	/* border: 1px solid white; */
+}
+
+.player.other {
+	width: 180px;
+	height: 130px;
+	top: 260px;
+}
+
+.player.other.right {
+	left: 775px;
+}
+
+.player.other.right.lower {
+	left: 720px;
+	top: 420px;
+}
+
+.player.other.right.upper {
+	left: 720px;
+	top: 100px;
+}
+
+.player.other.top {
+	left: 408px;
+	top: 5px;
+}
+
+.player.other.left {
+	left: 35px;
+}
+
+.player.other.left.upper {
+	top: 100px;
+	left: 90px;
+}
+
+.player.other.left.lower {
+	top: 420px;
+	left: 90px;
+}
+
+.watcher-box {
+	position: absolute;
+	bottom: 12px;
+	left: 100px;
+	width: 58px;
+	height: 36px;
+	display: flex;
+	justify-content: flex-end;
+	flex-direction: column;
+	/* border: 1px solid white; */
+}
+
+.watcher-box.other {
+	bottom: 61px;
+	left: auto;
+}
+
+.watcher-box.other.right, .watcher-box.other.top {
+	left: 130px;
+}
+
+.watcher {
+	width: 100%;
+	height: 18px;
+	overflow: hidden;
+	text-align: left;
+	color: lightgreen;
+	display: none;
+	/* border: 1px solid white; */
+}
+
+.watcher.visible {
+	display: block;
+}
+
+.player-icon {
+	position: absolute;
+	left: 165px;
+	bottom: 0px;
+	width: 80px;
+	height: 80px;
+	background-size: contain;
+	/* border: 5px solid white; */
+}
+
+.player-icon.other {
+	top: 0px;
+	left: 52px;
+}
+
+.player-icon.team0 {
+	background-image: url('img/person-blue.png');
+}
+
+.player-icon.team1 {
+	background-image: url('img/person-red.png');
+}
+
+@keyframes blinking-team0 {
+	0% {
+		background-color: white;
+		border: 1px solid white;
+	}
+
+	25% {
+		background-color: white;
+		border: 1px solid white;
+	}
+
+	100% {
+		background-color: aqua;
+		border: 1px solid #126620;
+	}
+}
+
+@keyframes blinking-team1 {
+	0% {
+		background-color: white;
+		border: 1px solid white;
+	}
+
+	25% {
+		background-color: white;
+		border: 1px solid white;
+	}
+
+	100% {
+		background-color: pink;
+		border: 1px solid #126620;
+	}
+}
+
+.player-icon.focus {
+	border-radius: 50%;
+}
+
+.player-icon.focus.team0 {
+	animation: blinking-team0 1s infinite;
+}
+
+.player-icon.focus.team1 {
+	animation: blinking-team1 1s infinite;
+}
+
+.player-name,
+.player-name.other {
+	position: absolute;
+	top: 50px;
+	width: 100%;
+	height: 18px;
+	color: white;
+	overflow: hidden;
+	font-weight: bold;
+	text-align: center;
+	/* border: 1px solid white; */
+}
+
+.dealer {
+	position: absolute;
+	left: 250px;
+	bottom: 33px;
+	width: 40px;
+	height: 40px;
+	background-image: url('img/dealer.png');
+	background-size: contain;
+	display: none;
+	/* border: 1px solid white; */
+}
+
+.dealer.visible {
+	display: block;
+}
+
+.dealer.other {
+	top: 0px;
+}
+
+.dealer.other.right,
+.dealer.other.top {
+	left: 0px;
+}
+
+.dealer.other.left {
+	left: 145px;
+}
+
+.bid {
+	position: absolute;
+	left: 255px;
+	bottom: 0px;
+	color: white;
+	overflow: hidden;
+	font-size: 28px;
+	font-weight: bold;
+	text-align: center;
+	display: none;
+	/* border: 1px solid white; */
+}
+
+.bid.visible {
+	display: block;
+}
+
+.bid.other {
+	top: 45px;
+	left: 3px;
+}
+
+.bid.other.left {
+	left: 150px;
+}
+
+
+.kunuk-box {
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+	width: 125px;
+	height: 75px;
+	/* border: 1px solid red; */
+}
+
+.kunuk-box.other {
+	width: 100%;
+	height: 50px;
+}
+
+.kunuk {
+	float: left;
+	width: 25px;
+	height: 25px;
+	background-image: url('img/kunuk.gif');
+	background-size: contain;
+	display: none;
+}
+
+.kunuk.right,
+.kunuk.top {
+	float: right;
+}
+
+.kunuk.visible {
+	display: block;
+}
+
+.kunuk-just-installed {
+	position: absolute;
+	left: 225px;
+	bottom: 0px;
+	width: 100px;
+	height: 100px;
+	background-size: contain;
+	background-image: url('img/kodiinstalled.gif');
+	z-index: 500;
+	display: none;
+	/* border: 5px solid white; */
+}
+
+.kunuk-just-installed.other {
+	top: 0px;
+	left: 120px;
+}
+
+.kunuk-just-installed.other.left {
+	top: 0px;
+	left: 0px;
+}
+
+.kunuk-just-installed.visible {
+	display: block;
+}

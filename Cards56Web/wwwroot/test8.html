@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+    <title>6-Player Test Page</title>
+    <style type="text/css">
+    html, body { height: 100%; padding: 0; margin: 0; }
+    #div0 { width: 50%; height: 25%; float: left; background: #DDD; }
+    #div1 { width: 50%; height: 25%; float: left; background: #CCC; }
+    #div2 { width: 50%; height: 25%; float: left; background: #DDD; }
+    #div3 { width: 50%; height: 25%; float: left; background: #CCC; }
+    #div4 { width: 50%; height: 25%; float: left; background: #DDD; }
+    #div5 { width: 50%; height: 25%; float: left; background: #CCC; }
+    #div6 { width: 50%; height: 25%; float: left; background: #CCC; }
+    #div7 { width: 50%; height: 25%; float: left; background: #CCC; }
+    </style>
+</head>
+<body>
+    <div id="div0">
+        <div style="width:100%; height:100%">
+            <div id="divplayer_0" style="height: 75px; padding: 8px;">
+                <button id="joinButton_0">Join</button>
+                <button id="closeButton_0" disabled>Close</button>
+                <label for="bidNumber_0">Bid:</label>
+                <input id="bidNumber_0" size="2" />
+                <button id="bidButton_0" disabled>Place Bid</button>
+                <button id="passButton_0" disabled>Pass Bid</button>
+                <button id="startNextGameButton_0" disabled>Start Next Game</button>
+                <label id="message_0" style="font-size: larger;">Not connected...</label>
+                <label id="score_0" style="font-size: larger; float: right;"></label>
+                <hr/>
+                <div>
+                    <label id="playerName_0" style="font-size: larger;">Name</label>
+                    <button id="card0_0" disabled>_</button>
+                    <button id="card1_0" disabled>_</button>
+                    <button id="card2_0" disabled>_</button>
+                    <button id="card3_0" disabled>_</button>
+                    <button id="card4_0" disabled>_</button>
+                    <button id="card5_0" disabled>_</button>
+                    <button id="card6_0" disabled>_</button>
+                    <button id="card7_0" disabled>_</button>
+                    <button id="showTrump_0" disabled>Show Trump</button>
+                    <label id="highBid_0" style="font-size: larger;"></label>
+                    <label id="selectedTrump_0" style="font-size: larger;"></label>
+                </div> 
+                <div>
+                    <label id="rounds_0"></label>
+                </div>
+            </div>
+            <div style="overflow-y: auto; height: calc(100% - 80px);">
+                <table style="width: 100%; background-color:#FFFFE0;">
+                    <thead>
+                    <tr style="background-color:#BDB76B;color:#ffffff;">
+                        <td style="width: 75px">From</td>
+                        <td style="width: 75px">To</td>
+                        <td>Data</td>
+                    </tr>
+                    </thead>
+                    <tbody id="commsLog_0">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="div1">
+        <div style="width:100%; height:100%">
+            <div id="divplayer_1" style="height: 75px; padding: 8px;">
+                <button id="joinButton_1">Join</button>
+                <button id="closeButton_1" disabled>Close</button>
+                <label for="bidNumber_1">Bid:</label>
+                <input id="bidNumber_1" size="2" />
+                <button id="bidButton_1" disabled>Place Bid</button>
+                <button id="passButton_1" disabled>Pass Bid</button>
+                <button id="startNextGameButton_1" disabled>Start Next Game</button>
+                <label id="message_1" style="font-size: larger;">Not connected...</label>
+                <label id="score_1" style="font-size: larger; float: right;"></label>
+                <hr/>
+                <div>
+                    <label id="playerName_1" style="font-size: larger;">Name</label>
+                    <button id="card0_1" disabled>_</button>
+                    <button id="card1_1" disabled>_</button>
+                    <button id="card2_1" disabled>_</button>
+                    <button id="card3_1" disabled>_</button>
+                    <button id="card4_1" disabled>_</button>
+                    <button id="card5_1" disabled>_</button>
+                    <button id="card6_1" disabled>_</button>
+                    <button id="card7_1" disabled>_</button>
+                    <button id="showTrump_1" disabled>Show Trump</button>
+                    <label id="highBid_1" style="font-size: larger;"></label>
+                    <label id="selectedTrump_1" style="font-size: larger;"></label>
+                </div> 
+                <div>
+                    <label id="rounds_1"></label>
+                </div>
+            </div>
+            <div style="overflow-y: auto; height: calc(100% - 80px);">
+                <table style="width: 100%; background-color:#FFFFE0;">
+                    <thead>
+                    <tr style="background-color:#BDB76B;color:#ffffff;">
+                        <td style="width: 75px">From</td>
+                        <td style="width: 75px">To</td>
+                        <td>Data</td>
+                    </tr>
+                    </thead>
+                    <tbody id="commsLog_1">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="div2">
+        <div style="width:100%; height:100%">
+            <div id="divplayer_2" style="height: 75px; padding: 8px;">
+                <button id="joinButton_2">Join</button>
+                <button id="closeButton_2" disabled>Close</button>
+                <label for="bidNumber_2">Bid:</label>
+                <input id="bidNumber_2" size="2" />
+                <button id="bidButton_2" disabled>Place Bid</button>
+                <button id="passButton_2" disabled>Pass Bid</button>
+                <button id="startNextGameButton_2" disabled>Start Next Game</button>
+                <label id="message_2" style="font-size: larger;">Not connected...</label>
+                <label id="score_2" style="font-size: larger; float: right;"></label>
+                <hr/>
+                <div>
+                    <label id="playerName_2" style="font-size: larger;">Name</label>
+                    <button id="card0_2" disabled>_</button>
+                    <button id="card1_2" disabled>_</button>
+                    <button id="card2_2" disabled>_</button>
+                    <button id="card3_2" disabled>_</button>
+                    <button id="card4_2" disabled>_</button>
+                    <button id="card5_2" disabled>_</button>
+                    <button id="card6_2" disabled>_</button>
+                    <button id="card7_2" disabled>_</button>
+                    <button id="showTrump_2" disabled>Show Trump</button>
+                    <label id="highBid_2" style="font-size: larger;"></label>
+                    <label id="selectedTrump_2" style="font-size: larger;"></label>
+                </div> 
+                <div>
+                    <label id="rounds_2"></label>
+                </div>
+            </div>
+            <div style="overflow-y: auto; height: calc(100% - 80px);">
+                <table style="width: 100%; background-color:#FFFFE0;">
+                    <thead>
+                    <tr style="background-color:#BDB76B;color:#ffffff;">
+                        <td style="width: 75px">From</td>
+                        <td style="width: 75px">To</td>
+                        <td>Data</td>
+                    </tr>
+                    </thead>
+                    <tbody id="commsLog_2">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>    
+    <div id="div3">
+        <div style="width:100%; height:100%">
+            <div id="divplayer_3" style="height: 75px; padding: 8px;">
+                <button id="joinButton_3">Join</button>
+                <button id="closeButton_3" disabled>Close</button>
+                <label for="bidNumber_3">Bid:</label>
+                <input id="bidNumber_3" size="2" />
+                <button id="bidButton_3" disabled>Place Bid</button>
+                <button id="passButton_3" disabled>Pass Bid</button>
+                <button id="startNextGameButton_3" disabled>Start Next Game</button>
+                <label id="message_3" style="font-size: larger;">Not connected...</label>
+                <label id="score_3" style="font-size: larger; float: right;"></label>
+                <hr/>
+                <div>
+                    <label id="playerName_3" style="font-size: larger;">Name</label>
+                    <button id="card0_3" disabled>_</button>
+                    <button id="card1_3" disabled>_</button>
+                    <button id="card2_3" disabled>_</button>
+                    <button id="card3_3" disabled>_</button>
+                    <button id="card4_3" disabled>_</button>
+                    <button id="card5_3" disabled>_</button>
+                    <button id="card6_3" disabled>_</button>
+                    <button id="card7_3" disabled>_</button>
+                    <button id="showTrump_3" disabled>Show Trump</button>
+                    <label id="highBid_3" style="font-size: larger;"></label>
+                    <label id="selectedTrump_3" style="font-size: larger;"></label>
+                </div> 
+                <div>
+                    <label id="rounds_3"></label>
+                </div>
+            </div>
+            <div style="overflow-y: auto; height: calc(100% - 80px);">
+                <table style="width: 100%; background-color:#FFFFE0;">
+                    <thead>
+                    <tr style="background-color:#BDB76B;color:#ffffff;">
+                        <td style="width: 75px">From</td>
+                        <td style="width: 75px">To</td>
+                        <td>Data</td>
+                    </tr>
+                    </thead>
+                    <tbody id="commsLog_3">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="div4">
+        <div style="width:100%; height:100%">
+            <div id="divplayer_4" style="height: 75px; padding: 8px;">
+                <button id="joinButton_4">Join</button>
+                <button id="closeButton_4" disabled>Close</button>
+                <label for="bidNumber_4">Bid:</label>
+                <input id="bidNumber_4" size="2" />
+                <button id="bidButton_4" disabled>Place Bid</button>
+                <button id="passButton_4" disabled>Pass Bid</button>
+                <button id="startNextGameButton_4" disabled>Start Next Game</button>
+                <label id="message_4" style="font-size: larger;">Not connected...</label>
+                <label id="score_4" style="font-size: larger; float: right;"></label>
+                <hr/>
+                <div>
+                    <label id="playerName_4" style="font-size: larger;">Name</label>
+                    <button id="card0_4" disabled>_</button>
+                    <button id="card1_4" disabled>_</button>
+                    <button id="card2_4" disabled>_</button>
+                    <button id="card3_4" disabled>_</button>
+                    <button id="card4_4" disabled>_</button>
+                    <button id="card5_4" disabled>_</button>
+                    <button id="card6_4" disabled>_</button>
+                    <button id="card7_4" disabled>_</button>
+                    <button id="showTrump_4" disabled>Show Trump</button>
+                    <label id="highBid_4" style="font-size: larger;"></label>
+                    <label id="selectedTrump_4" style="font-size: larger;"></label>
+                </div> 
+                <div>
+                    <label id="rounds_4"></label>
+                </div>
+            </div>
+            <div style="overflow-y: auto; height: calc(100% - 80px);">
+                <table style="width: 100%; background-color:#FFFFE0;">
+                    <thead>
+                    <tr style="background-color:#BDB76B;color:#ffffff;">
+                        <td style="width: 75px">From</td>
+                        <td style="width: 75px">To</td>
+                        <td>Data</td>
+                    </tr>
+                    </thead>
+                    <tbody id="commsLog_4">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="div5">
+        <div style="width:100%; height:100%">
+            <div id="divplayer_5" style="height: 75px; padding: 8px;">
+                <button id="joinButton_5">Join</button>
+                <button id="closeButton_5" disabled>Close</button>
+                <label for="bidNumber_5">Bid:</label>
+                <input id="bidNumber_5" size="2" />
+                <button id="bidButton_5" disabled>Place Bid</button>
+                <button id="passButton_5" disabled>Pass Bid</button>
+                <button id="startNextGameButton_5" disabled>Start Next Game</button>
+                <label id="message_5" style="font-size: larger;">Not connected...</label>
+                <label id="score_5" style="font-size: larger; float: right;"></label>
+                <hr/>
+                <div>
+                    <label id="playerName_5" style="font-size: larger;">Name</label>
+                    <button id="card0_5" disabled>_</button>
+                    <button id="card1_5" disabled>_</button>
+                    <button id="card2_5" disabled>_</button>
+                    <button id="card3_5" disabled>_</button>
+                    <button id="card4_5" disabled>_</button>
+                    <button id="card5_5" disabled>_</button>
+                    <button id="card6_5" disabled>_</button>
+                    <button id="card7_5" disabled>_</button>
+                    <button id="showTrump_5" disabled>Show Trump</button>
+                    <label id="highBid_5" style="font-size: larger;"></label>
+                    <label id="selectedTrump_5" style="font-size: larger;"></label>
+                </div> 
+                <div>
+                    <label id="rounds_5"></label>
+                </div>
+            </div>
+            <div style="overflow-y: auto; height: calc(100% - 80px);">
+                <table style="width: 100%; background-color:#FFFFE0;">
+                    <thead>
+                    <tr style="background-color:#BDB76B;color:#ffffff;">
+                        <td style="width: 75px">From</td>
+                        <td style="width: 75px">To</td>
+                        <td>Data</td>
+                    </tr>
+                    </thead>
+                    <tbody id="commsLog_5">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="div6">
+        <div style="width:100%; height:100%">
+            <div id="divplayer_6" style="height: 75px; padding: 8px;">
+                <button id="joinButton_6">Join</button>
+                <button id="closeButton_6" disabled>Close</button>
+                <label for="bidNumber_6">Bid:</label>
+                <input id="bidNumber_6" size="2" />
+                <button id="bidButton_6" disabled>Place Bid</button>
+                <button id="passButton_6" disabled>Pass Bid</button>
+                <button id="startNextGameButton_6" disabled>Start Next Game</button>
+                <label id="message_6" style="font-size: larger;">Not connected...</label>
+                <label id="score_6" style="font-size: larger; float: right;"></label>
+                <hr/>
+                <div>
+                    <label id="playerName_6" style="font-size: larger;">Name</label>
+                    <button id="card0_6" disabled>_</button>
+                    <button id="card1_6" disabled>_</button>
+                    <button id="card2_6" disabled>_</button>
+                    <button id="card3_6" disabled>_</button>
+                    <button id="card4_6" disabled>_</button>
+                    <button id="card5_6" disabled>_</button>
+                    <button id="card6_6" disabled>_</button>
+                    <button id="card7_6" disabled>_</button>
+                    <button id="showTrump_6" disabled>Show Trump</button>
+                    <label id="highBid_6" style="font-size: larger;"></label>
+                    <label id="selectedTrump_6" style="font-size: larger;"></label>
+                </div> 
+                <div>
+                    <label id="rounds_6"></label>
+                </div>
+            </div>
+            <div style="overflow-y: auto; height: calc(100% - 80px);">
+                <table style="width: 100%; background-color:#FFFFE0;">
+                    <thead>
+                    <tr style="background-color:#BDB76B;color:#ffffff;">
+                        <td style="width: 75px">From</td>
+                        <td style="width: 75px">To</td>
+                        <td>Data</td>
+                    </tr>
+                    </thead>
+                    <tbody id="commsLog_6">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="div7">
+        <div style="width:100%; height:100%">
+            <div id="divplayer_7" style="height: 75px; padding: 8px;">
+                <button id="joinButton_7">Join</button>
+                <button id="closeButton_7" disabled>Close</button>
+                <label for="bidNumber_7">Bid:</label>
+                <input id="bidNumber_7" size="2" />
+                <button id="bidButton_7" disabled>Place Bid</button>
+                <button id="passButton_7" disabled>Pass Bid</button>
+                <button id="startNextGameButton_7" disabled>Start Next Game</button>
+                <label id="message_7" style="font-size: larger;">Not connected...</label>
+                <label id="score_7" style="font-size: larger; float: right;"></label>
+                <hr/>
+                <div>
+                    <label id="playerName_7" style="font-size: larger;">Name</label>
+                    <button id="card0_7" disabled>_</button>
+                    <button id="card1_7" disabled>_</button>
+                    <button id="card2_7" disabled>_</button>
+                    <button id="card3_7" disabled>_</button>
+                    <button id="card4_7" disabled>_</button>
+                    <button id="card5_7" disabled>_</button>
+                    <button id="card6_7" disabled>_</button>
+                    <button id="card7_7" disabled>_</button>
+                    <button id="showTrump_7" disabled>Show Trump</button>
+                    <label id="highBid_7" style="font-size: larger;"></label>
+                    <label id="selectedTrump_7" style="font-size: larger;"></label>
+                </div> 
+                <div>
+                    <label id="rounds_7"></label>
+                </div>
+            </div>
+            <div style="overflow-y: auto; height: calc(100% - 80px);">
+                <table style="width: 100%; background-color:#FFFFE0;">
+                    <thead>
+                    <tr style="background-color:#BDB76B;color:#ffffff;">
+                        <td style="width: 75px">From</td>
+                        <td style="width: 75px">To</td>
+                        <td>Data</td>
+                    </tr>
+                    </thead>
+                    <tbody id="commsLog_7">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="lib/signalr.js"></script>
+<script src="test.js"></script>
+<script>
+    var gamePanel_0 = new GamePanel(0, "Chakko", 2, "ml", document);
+    var gamePanel_1 = new GamePanel(1, "Kannan", 2, "", document);
+    var gamePanel_2 = new GamePanel(2, "Abdul", 2, "en", document);
+    var gamePanel_3 = new GamePanel(3, "Pottan", 2, "^%$#", document);
+    var gamePanel_4 = new GamePanel(4, "Bunny", 2, "ml-IN", document);
+    var gamePanel_5 = new GamePanel(5, "Naina", 2, "en", document);
+    var gamePanel_6 = new GamePanel(6, "Chatur", 2, "en", document);
+    var gamePanel_7 = new GamePanel(7, "Boola", 2, "en", document);
+</script>
+
+</html>
