@@ -2,7 +2,8 @@ version: "3"
 services:
     web:
         image: bheemboy/cards56web
-        build: .
+        container_name: cards56web
+        restart: unless-stopped
         ports:
             - "5000:5000"
             - "5001:5001"

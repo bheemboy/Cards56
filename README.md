@@ -1,6 +1,16 @@
 # Cards56 Web Solution
 
-## Prepare Development Environment
+## Running in docker
+
+1. Install and configure SSL certificate
+
+2. Download the docker-run-cards56web.sh file on the docker server. Update the paths and  password. Run it.
+
+
+        sudo ~/docker-run-cards56web.sh
+
+
+## Developing on the project
 
 1. Download and install asp.net core 3.1 sdk
 
@@ -23,4 +33,3 @@
         dotnet user-secrets -p cards56web\cards56web.csproj set "Kestrel:Certificates:Development:Password" "crypticpassword"
 
 
-## Running in Production Environment using docker
