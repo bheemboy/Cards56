@@ -18,6 +18,8 @@
     Replace 'crypticpassword' appropriately in the command above
 
 5. Next you need to save the same password for Cards56Web.csproj in your .net user secrets. You can use the following command.
+
+
         dotnet user-secrets -p cards56web\cards56web.csproj set "Kestrel:Certificates:Development:Password" "crypticpassword"
 
 
