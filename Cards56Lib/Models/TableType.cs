@@ -7,7 +7,7 @@ namespace Cards56Lib
     public class TableType
     {
         public int Type {get;}
-        public int BaseCoolieCount => (Type==0)? 5: 6; 
+        public int BaseCoolieCount => (Type==0)? 5: (Type==1)? 6: 7; 
         public int MaxPlayers => (Type==0)? 4: (Type==1)? 6: 8;
         public int PlayersPerTeam => MaxPlayers/2; 
         public int DeckSize => (Type==0)? 32: (Type==1)? 48: 64;

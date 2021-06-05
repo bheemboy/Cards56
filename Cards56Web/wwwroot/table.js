@@ -15,7 +15,7 @@ class Table
     this._init_koolies();
     this._init_scores();
     this._init_center_display();
-    this._init_version("2.1");
+    this._init_version("2021.05.06");
     this._init_alert_message();
     this._init_table_buttons();
   }
@@ -70,7 +70,7 @@ class Table
     this.koolies_my_team = [];
     this.koolies_other_team = [];
 
-    for (let i = 0; i < 12; i++)
+    for (let i = 0; i < 14; i++)
     {
       this.koolies_my_team.push($('<div/>').addClass('koolie myteam').appendTo($(koolies_div_my_team)[0]));
       this.koolies_other_team.push($('<div/>').addClass('koolie otherteam').appendTo($(koolies_div_other_team)[0]));

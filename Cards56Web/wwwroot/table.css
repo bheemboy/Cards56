@@ -32,17 +32,17 @@ body {
     position: absolute;
     top: 10px;
     height: 25px;
-    width: 320px;
+    width: 364px;
     display: block;
     /* border: 1px solid white; */
 }
 
 .koolies.myteam {
-    left: 8px;
+    left: 1px;
 }
 
 .koolies.otherteam {
-    left: 672px;
+    left: 635px;
 }
 
 .koolie {
