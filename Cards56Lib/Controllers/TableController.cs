@@ -516,7 +516,7 @@ namespace Cards56Lib
                             // Check if no one else has trump cards and the next player has all bigcards
                             if (Game.Stage!=GameStage.GameOver && (IsThani || Game.TrumpExposed) && PlayerHasAllBiggerCards(CurrentRound.NextPlayer))
                             {
-                                System.Console.WriteLine($"Player {CurrentRound.NextPlayer} get all next rounds!!!");
+                                // System.Console.WriteLine($"Player {CurrentRound.NextPlayer} get all next rounds!!!");
                                 while (Game.Stage!=GameStage.GameOver)
                                 {
                                     AutoPlayNextRound(CurrentRound.NextPlayer);
@@ -660,7 +660,7 @@ namespace Cards56Lib
                     CardsAt(T.PlayerAt(posn+i)).Remove(card);
                 }
             }
-            System.Console.WriteLine($"Auto played {string.Join(",",CurrentRound.PlayedCards)}.");
+            // System.Console.WriteLine($"Auto played {string.Join(",",CurrentRound.PlayedCards)}.");
         }
         private void UpdateCooliesAndKodies()
         {
