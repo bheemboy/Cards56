@@ -79,12 +79,11 @@ sudo docker-compose -f docker-compose.yml up -d
 ```
 4. When running in development mode you need to generate and store a dev certificate for the web application. You can do this using the following commands. Replace `crypticpassword` appropriately.
 ```
-dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\cards56web.pfx -p crypticpassword
+dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\Cards56Web.pfx -p crypticpassword
 dotnet dev-certs https --trust
 ```
 5. Next you need to save the same password for Cards56Web.csproj in your .net user secrets. You can use the following command.
 
 ```
-dotnet user-secrets -p cards56web\cards56web.csproj \
-        set "Kestrel:Certificates:Development:Password" "crypticpassword"
+dotnet user-secrets -p Cards56web\Cards56Web.csproj set "Kestrel:Certificates:Development:Password" "crypticpassword"
 ```

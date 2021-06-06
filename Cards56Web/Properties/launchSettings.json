@@ -3,7 +3,7 @@
     "windowsAuthentication": false, 
     "anonymousAuthentication": true, 
     "iisExpress": {
-      "applicationUrl": "https://+;http://+",
+      "applicationUrl": "https://localhost;http://localhost",
       "sslPort": 0
     }
   },
@@ -18,7 +18,7 @@
     "Cards56Web": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://+;http://+",
+      "applicationUrl": "https://localhost;http://localhost",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
