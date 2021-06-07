@@ -516,7 +516,7 @@ namespace Cards56Lib
                             // Check if no one else has trump cards and the next player has all bigcards
                             if (Game.Stage!=GameStage.GameOver && (IsThani || Game.TrumpExposed) && PlayerHasAllBiggerCards(CurrentRound.NextPlayer))
                             {
-                                System.Console.WriteLine($"Player {CurrentRound.NextPlayer} get all next rounds!!!");
+                                // System.Console.WriteLine($"Player {CurrentRound.NextPlayer} get all next rounds!!!");
                                 while (Game.Stage!=GameStage.GameOver)
                                 {
                                     AutoPlayNextRound(CurrentRound.NextPlayer);
@@ -609,6 +609,10 @@ namespace Cards56Lib
                 // Update coolies and kodis
                 UpdateCooliesAndKodies();
 
+                // Print summary
+                string BidderWinLose = (TeamScoreOf(Game.Bid.HighBidder) >= (IsThani? 8 : Game.Bid.HighBid))? "WON" : "LOST";
+                System.Console.WriteLine($"Team [{T.TeamOf(Game.Bid.HighBidder)}] bid [{Game.Bid.HighBid}] {BidderWinLose}");
+
                 // return any remain cards players have
                 Game.Chairs.ForEach(c => Deck.ReturnCards(c.Cards));
                 if (!Game.TrumpExposed && Game.TrumpCard != "") Deck.ReturnCard(Game.TrumpCard);
@@ -660,7 +664,7 @@ namespace Cards56Lib
                     CardsAt(T.PlayerAt(posn+i)).Remove(card);
                 }
             }
-            System.Console.WriteLine($"Auto played {string.Join(",",CurrentRound.PlayedCards)}.");
+            // System.Console.WriteLine($"Auto played {string.Join(",",CurrentRound.PlayedCards)}.");
         }
         private void UpdateCooliesAndKodies()
         {
