@@ -114,39 +114,38 @@ cd Cards56
 ```
 sudo apt-get install -y dotnet-sdk-5.0
 ```
-Generate certificate using openssl
+6. Generate certificate using openssl
 ```
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
                -keyout ~/.aspnet/https/cards56web.key \
                -out ~/.aspnet/https/cards56web.crt \
                -config ubuntu-ssl-localhost.conf
 ```
-Register the certificate with Linux
+7. Register the certificate with Linux
 ```
 sudo cp ~/.aspnet/https/cards56web.crt /usr/local/share/ca-certificates
 sudo update-ca-certificates
 ```
-Verify that the certificate is not being recognized
+8. Verify that the certificate is being recognized
 ```
 openssl verify ~/.aspnet/https/cards56web.crt
 ```
-Export the CRT certificate to pfx format. Replace `crypticpassword` appropriately.
+9. Export the CRT certificate to pfx format. Replace `crypticpassword` appropriately.
 ```
 openssl pkcs12 -export -out ~/.aspnet/https/cards56web.pfx -inkey ~/.aspnet/https/cards56web.key -in ~/.aspnet/https/cards56web.crt -passout pass:crypticpassword
 ```
-Import the PFX certificate into dotnet and check it.
+10. Import the PFX certificate into dotnet and check it.
 ```
 dotnet dev-certs https --clean --import ~/.aspnet/https/cards56web.pfx -p crypticpassword
 dotnet dev-certs https --check -v
 ```
-Now you can remove .net core SDK 5.0, if you want
+11. Now you can remove .net core SDK 5.0, if you want
 ```
 sudo apt-get remove dotnet-sdk-5.0
 sudo apt autoremove
 ```
-6. Next you need to save the same password for Cards56Web.csproj in your .net user secrets. You can use the following command.
+12. Next you need to save the same password for Cards56Web.csproj in your .net user secrets. You can use the following command.
 ```
 dotnet user-secrets -p Cards56web\Cards56Web.csproj set "Kestrel:Certificates:Development:Password" "crypticpassword"
 ```
-7. You should be now ready to load and run/debug the application in docker and/or in VSCode.
-
+13. You should be now ready to load and run/debug the application in docker and/or in VSCode.
