@@ -58,11 +58,6 @@ services:
             - ASPNETCORE_URLS=https://+;http://+
             - ASPNETCORE_Kestrel__Certificates__Default__Password=crypticpassword
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.pfx
-        healthcheck:
-            test: curl --fail -s https://localhost:5001/ || exit 1
-            interval: 1m30s
-            timeout: 10s
-            retries: 3
         volumes:
             - ~/docker/ssl/config/live/56cards.net:/https:ro
 ```
