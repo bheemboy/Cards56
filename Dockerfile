@@ -9,3 +9,4 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS final
 WORKDIR /webapp
 COPY --from=build /webapp .
 ENTRYPOINT ["dotnet", "Cards56Web.dll"]
+HEALTHCHECK CMD curl -f http://localhost/ || exit 1
