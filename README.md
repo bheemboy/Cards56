@@ -55,6 +55,7 @@ services:
             - "5000:80"
             - "5001:443"
         environment:
+            - TZ=America/Los_Angeles
             - ASPNETCORE_URLS=https://+;http://+
             - ASPNETCORE_Kestrel__Certificates__Default__Password=crypticpassword
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.pfx
@@ -64,7 +65,7 @@ services:
 
 8. Run docker-compose to download the image from docker hub and start it.
 ```
-sudo docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose.yml up -d
 ```
 
 ## WINDOWS: Setting up development environment for this project
@@ -80,7 +81,7 @@ cd Cards56
 ```
 4. When running in development mode you need to generate and store a dev certificate for the web application. You can do this using the following commands. Replace `crypticpassword` appropriately.
 ```
-dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\Cards56Web.pfx -p crypticpassword
+dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\cert.pfx -p crypticpassword
 dotnet dev-certs https --trust
 ```
 5. Next you need to save the same password for Cards56Web.csproj in your .net user secrets. You can use the following command.
@@ -117,26 +118,26 @@ sudo apt-get install -y dotnet-sdk-5.0
 6. Generate certificate using openssl
 ```
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-               -keyout ~/.aspnet/https/cards56web.key \
-               -out ~/.aspnet/https/cards56web.crt \
+               -keyout ~/.aspnet/https/cert.key \
+               -out ~/.aspnet/https/cert.crt \
                -config ubuntu-ssl-localhost.conf
 ```
 7. Register the certificate with Linux
 ```
-sudo cp ~/.aspnet/https/cards56web.crt /usr/local/share/ca-certificates
+sudo cp ~/.aspnet/https/cert.crt /usr/local/share/ca-certificates
 sudo update-ca-certificates
 ```
 8. Verify that the certificate is being recognized
 ```
-openssl verify ~/.aspnet/https/cards56web.crt
+openssl verify ~/.aspnet/https/cert.crt
 ```
 9. Export the CRT certificate to pfx format. Replace `crypticpassword` appropriately.
 ```
-openssl pkcs12 -export -out ~/.aspnet/https/cards56web.pfx -inkey ~/.aspnet/https/cards56web.key -in ~/.aspnet/https/cards56web.crt -passout pass:crypticpassword
+openssl pkcs12 -export -out ~/.aspnet/https/cert.pfx -inkey ~/.aspnet/https/cert.key -in ~/.aspnet/https/cert.crt -passout pass:crypticpassword
 ```
 10. Import the PFX certificate into dotnet and check it.
 ```
-dotnet dev-certs https --clean --import ~/.aspnet/https/cards56web.pfx -p crypticpassword
+dotnet dev-certs https --clean --import ~/.aspnet/https/cert.pfx -p crypticpassword
 dotnet dev-certs https --check -v
 ```
 11. Now you can remove .net core SDK 5.0, if you want
