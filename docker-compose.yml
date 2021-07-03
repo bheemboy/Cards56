@@ -10,8 +10,10 @@ services:
             - "5000:80"
             - "5001:443"
         environment:
+            - TZ=America/Los_Angeles
             - ASPNETCORE_URLS=https://+;http://+
-            - ASPNETCORE_Kestrel__Certificates__Default__Password=crypticpassword
-            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cards56web.pfx
+            - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERTIFICATE_PWD}
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=${CERTIFICATE_NAME}
         volumes:
-            - ~/.aspnet/https:/https:ro
+            - ${CERTIFICATE_PATH}:/https:ro
+

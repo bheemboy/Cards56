@@ -55,6 +55,7 @@ services:
             - "5000:80"
             - "5001:443"
         environment:
+            - TZ=America/Los_Angeles
             - ASPNETCORE_URLS=https://+;http://+
             - ASPNETCORE_Kestrel__Certificates__Default__Password=crypticpassword
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.pfx
@@ -64,10 +65,10 @@ services:
 
 8. Run docker-compose to download the image from docker hub and start it.
 ```
-sudo docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose.yml up -d
 ```
 
-## Setting up development environment for this project
+## WINDOWS: Setting up development environment for this project
 
 1. Download and install asp.net core 3.1 sdk
 
@@ -75,15 +76,77 @@ sudo docker-compose -f docker-compose.yml up -d
 
 3. Clone the source code
 ```
-        git clone https://github.com/bheemboy/Cards56.git
+git clone https://github.com/bheemboy/Cards56.git
+cd Cards56
 ```
 4. When running in development mode you need to generate and store a dev certificate for the web application. You can do this using the following commands. Replace `crypticpassword` appropriately.
 ```
-dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\Cards56Web.pfx -p crypticpassword
+dotnet dev-certs https -ep $env:USERPROFILE\.aspnet\https\cert.pfx -p crypticpassword
 dotnet dev-certs https --trust
 ```
 5. Next you need to save the same password for Cards56Web.csproj in your .net user secrets. You can use the following command.
-
 ```
 dotnet user-secrets -p Cards56web\Cards56Web.csproj set "Kestrel:Certificates:Development:Password" "crypticpassword"
 ```
+6. You should be now ready to load and run/debug the application in docker and/or in VSCode.
+
+## Mint 20.1 (UBUNTU 20.04): Setting up development environment for this project
+
+1. Add Microsoft package signing key to your list of trusted keys and add the package repository.
+```
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+```
+2. Install asp.net core 3.1 sdk
+```
+sudo apt-get update; \
+  sudo apt-get install -y apt-transport-https && \
+  sudo apt-get update && \
+  sudo apt-get install -y dotnet-sdk-3.1
+```
+3. Download and install Visual Studio Code
+
+4. Clone the source code
+```
+git clone https://github.com/bheemboy/Cards56.git
+cd Cards56
+```
+5. When running in development mode you need to generate and store a dev certificate for the web application. Unfortunately, for this you need some commands in .net core 5.0 SDK. 
+```
+sudo apt-get install -y dotnet-sdk-5.0
+```
+6. Generate certificate using openssl
+```
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+               -keyout ~/.aspnet/https/cert.key \
+               -out ~/.aspnet/https/cert.crt \
+               -config ubuntu-ssl-localhost.conf
+```
+7. Register the certificate with Linux
+```
+sudo cp ~/.aspnet/https/cert.crt /usr/local/share/ca-certificates
+sudo update-ca-certificates
+```
+8. Verify that the certificate is being recognized
+```
+openssl verify ~/.aspnet/https/cert.crt
+```
+9. Export the CRT certificate to pfx format. Replace `crypticpassword` appropriately.
+```
+openssl pkcs12 -export -out ~/.aspnet/https/cert.pfx -inkey ~/.aspnet/https/cert.key -in ~/.aspnet/https/cert.crt -passout pass:crypticpassword
+```
+10. Import the PFX certificate into dotnet and check it.
+```
+dotnet dev-certs https --clean --import ~/.aspnet/https/cert.pfx -p crypticpassword
+dotnet dev-certs https --check -v
+```
+11. Now you can remove .net core SDK 5.0, if you want
+```
+sudo apt-get remove dotnet-sdk-5.0
+sudo apt autoremove
+```
+12. Next you need to save the same password for Cards56Web.csproj in your .net user secrets. You can use the following command.
+```
+dotnet user-secrets -p Cards56web\Cards56Web.csproj set "Kestrel:Certificates:Development:Password" "crypticpassword"
+```
+13. You should be now ready to load and run/debug the application in docker and/or in VSCode.

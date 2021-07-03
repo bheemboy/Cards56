@@ -34,7 +34,7 @@ namespace Cards56Lib
         public static void RemovePlayerById(string playerId)
         {
             Player ignored;
-            if (!All.TryRemove(playerId, out ignored))
+            if (All.ContainsKey(playerId) && !All.TryRemove(playerId, out ignored))
             {
                 throw new Exception($"Failed to remove player '{playerId}' from AllPlayers");
             }

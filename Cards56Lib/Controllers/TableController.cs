@@ -609,6 +609,10 @@ namespace Cards56Lib
                 // Update coolies and kodis
                 UpdateCooliesAndKodies();
 
+                // Print summary
+                string BidderWinLose = (TeamScoreOf(Game.Bid.HighBidder) >= (IsThani? 8 : Game.Bid.HighBid))? "WON" : "LOST";
+                System.Console.WriteLine($"Team [{T.TeamOf(Game.Bid.HighBidder)}] bid [{Game.Bid.HighBid}] {BidderWinLose}");
+
                 // return any remain cards players have
                 Game.Chairs.ForEach(c => Deck.ReturnCards(c.Cards));
                 if (!Game.TrumpExposed && Game.TrumpCard != "") Deck.ReturnCard(Game.TrumpCard);

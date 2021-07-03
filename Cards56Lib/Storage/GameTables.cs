@@ -35,12 +35,15 @@ namespace Cards56Lib
         {
             lock (_lock)
             {
-                GameTable ignored;
-                if (!All.TryRemove(tableId, out ignored))
+                if (All.ContainsKey(tableId))
                 {
-                    throw new Exception($"Failed to remove table '{tableId}' from AllTables");
+                    GameTable ignored;
+                    if (!All.TryRemove(tableId, out ignored))
+                    {
+                        throw new Exception($"Failed to remove table '{tableId}' from AllTables");
+                    }
+                    Console.WriteLine($"Removed empty gametable {tableId}");                    
                 }
-                Console.WriteLine($"Removed empty gametable {tableId}");
             }
         }
         public static GameTable GetFreeTable(int tableType, bool watchOnly)
