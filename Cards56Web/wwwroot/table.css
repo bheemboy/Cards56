@@ -121,12 +121,24 @@ body {
     display: none;
 }
 
-.version-label {
+.version-label-div {
     position: absolute;
     left: 0px;
     bottom: 0px;
     color: lightgreen;
     font-size: 12px;
+}
+
+a.version-label:link {
+    color: lightgreen;
+}
+
+a.version-label:visited {
+    color: lightgreen;
+}
+
+a.version-label:hover {
+    color: darkred;
 }
 
 .table-buttons {

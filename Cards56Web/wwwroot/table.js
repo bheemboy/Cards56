@@ -104,8 +104,8 @@ class Table
 
   _init_version = (ver) =>
   {
-    this._init_version_label = $('<div/>').addClass('version-label').appendTo($(this._main_div)[0]);
-    $(this._init_version_label)[0].textContent = "Version: " + ver;
+    this._init_version_label = $('<div/>').addClass('version-label-div').appendTo($(this._main_div)[0]);
+    $(this._init_version_label)[0].innerHTML = "<A class='version-label' href='https://github.com/bheemboy/Cards56/releases/tag/" + ver + "' target='_blank' rel='noopener'>Version: " + ver + "</A>";
   }
 
   _init_table_buttons = () =>
