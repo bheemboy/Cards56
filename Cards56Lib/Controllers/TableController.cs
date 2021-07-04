@@ -492,6 +492,7 @@ namespace Cards56Lib
             {
                 if (CanPlayCard(player, card))
                 {
+                    CurrentRound.AutoPlayNextCard = "";
                     CurrentRound.PlayedCards.Add(card);
                     CurrentRound.TrumpExposed.Add(Game.TrumpExposed);
 
@@ -533,6 +534,25 @@ namespace Cards56Lib
                         if (IsThani && (T.SameTeam(CurrentRound.NextPlayer, CurrentRound.FirstPlayer))) // Skip teammate
                         {
                             CurrentRound.NextPlayer = T.PlayerAt((CurrentRound.NextPlayer+1));
+                        }
+                    }
+
+                    // Check if nextplayer's card can be autoplayed
+                    if (Game.Stage!=GameStage.GameOver)
+                    {
+                        // If there is only one card to play
+                        if (CardsAt(CurrentRound.NextPlayer).Count == 1)
+                        {
+                            CurrentRound.AutoPlayNextCard = CardsAt(CurrentRound.NextPlayer).First();
+                        }
+                        else
+                        {
+                            // check if nextplayer has one and only one card of the current round suit
+                            var CurrentRoundSuitMatchingCards = CardsAt(CurrentRound.NextPlayer).Where(x => x.StartsWith(CurrentRoundSuit.ToString()));
+                            if (CurrentRoundSuitMatchingCards.Count() == 1)
+                            {
+                                CurrentRound.AutoPlayNextCard = CurrentRoundSuitMatchingCards.First();
+                            }
                         }
                     }
                 }

@@ -13,6 +13,8 @@ namespace Cards56Lib
         [JsonProperty]
         public List<string> PlayedCards {get; set;}
         [JsonProperty]
+        public string AutoPlayNextCard {get; set;}
+        [JsonProperty]
         public List<bool> TrumpExposed;
         [JsonProperty]
         public int Winner  {get; set;}
@@ -22,6 +24,7 @@ namespace Cards56Lib
         {
             FirstPlayer = firstPlayer;
             NextPlayer = FirstPlayer;
+            AutoPlayNextCard = "";
             PlayedCards = new List<string>();
             TrumpExposed = new List<bool>();
             Winner = -1;

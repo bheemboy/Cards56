@@ -162,6 +162,10 @@ class Game
                     this.table.ShowGameOverButton(true);
                 }
             }
+            else if (0 == this.currentPlayer && !this.watchOnly)
+            {
+                this.AutoPlayNextCardIfRequired();
+            }
         }
         catch (error)
         {
@@ -437,6 +441,21 @@ class Game
         {
             this.table.ShowRoundCards(false, 0, []);
             this.table.ShowLastRoundCards([]);
+        }
+    }
+
+    AutoPlayNextCardIfRequired = () =>
+    {
+        // Check if autoplay has been requested 
+        if (this.gameState.TableInfo.Rounds && this.gameState.TableInfo.Rounds.length > 0)
+        {
+            var autoplaycard = this.gameState.TableInfo.Rounds[this.gameState.TableInfo.Rounds.length - 1].AutoPlayNextCard; 
+            if (autoplaycard != "")
+            {
+                // sleep a little and then play the card
+                var self = this;
+                setTimeout(function() { self.hubConnection.invoke("PlayCard", autoplaycard, 2000); }, 200);
+            }
         }
     }
 
