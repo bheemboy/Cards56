@@ -20,6 +20,7 @@ namespace Cards56Web
         Task ShowTrump(int roundOverDelay);
         Task StartNextGame();        
         Task RefreshState();
+        Task ForfeitGame();
     }
     public enum Cards56HubMethod
     {
@@ -32,6 +33,7 @@ namespace Cards56Web
         ShowTrump=7, 
         StartNextGame=8,
         RefreshState=9,
+        ForfeitGame=10,
     }
     public interface ICards56HubEvents
     {
@@ -353,6 +355,26 @@ namespace Cards56Web
             {
                 await Clients.Caller.OnError((e is Card56Exception)?((Card56Exception)e).ErrorData.ErrorCode: 0,
                     Cards56HubMethod.RefreshState, 
+                    e.Message, 
+                    (e is Card56Exception)?((Card56Exception)e).ErrorData: null);
+            }
+        }
+        public async Task ForfeitGame()
+        {
+            try
+            {
+                if (Context.Items.ContainsKey("Lang"))
+                    Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture((string)Context.Items["Lang"]);
+
+                Player player = GetValidTablePlayer();
+                TableController table = new TableController(GameTables.All[player.TableName], StateUpdated);
+                
+                table.ForfeitGame(player);
+            }
+            catch (System.Exception e)
+            {
+                await Clients.Caller.OnError((e is Card56Exception)?((Card56Exception)e).ErrorData.ErrorCode: 0,
+                    Cards56HubMethod.ForfeitGame, 
                     e.Message, 
                     (e is Card56Exception)?((Card56Exception)e).ErrorData: null);
             }

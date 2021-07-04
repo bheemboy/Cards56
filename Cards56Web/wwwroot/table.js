@@ -15,7 +15,7 @@ class Table
     this._init_koolies();
     this._init_scores();
     this._init_center_display();
-    this._init_version("2021.05.06");
+    this._init_version("2021.07.03");
     this._init_alert_message();
     this._init_table_buttons();
   }
@@ -116,8 +116,8 @@ class Table
     $(this._logout_button)[0].textContent = "Logout";
     $(this._logout_button).click(function () { location.replace("./"); });
 
-    this._refresh_button = $('<button/>').addClass('table-button refresh').appendTo($(this._table_buttons_div)[0]);
-    $(this._refresh_button)[0].textContent = "Refresh";
+    this._forfeit_button = $('<button/>').addClass('table-button forfeit').appendTo($(this._table_buttons_div)[0]);
+    $(this._forfeit_button)[0].textContent = "Forfeit";
 
     this._new_game_button = $('<button/>').addClass('table-button new_game hidden').appendTo($(this._table_buttons_div)[0]);
     $(this._new_game_button)[0].textContent = "New Game";
@@ -158,13 +158,16 @@ class Table
 
   ShowGameOverButton = (val) =>
   {
+    $(this._forfeit_button).prop('disabled', val);
     if (val)
     {
       $(this._new_game_button).removeClass('hidden');
+      $(this._forfeit_button).addClass('disabled');
     }
     else
     {
       $(this._new_game_button).addClass('hidden');
+      $(this._forfeit_button).removeClass('disabled');
     }
   }
   SetPlayerCardClicked = (PlayerCardClickedEvent) =>
@@ -182,9 +185,9 @@ class Table
     this._new_game_button.click(NewGameClickedEvent);
   }
 
-  SetRefreshClicked = (RefreshClickedEvent) =>
+  SetForfeitClicked = (ForfeitClickedEvent) =>
   {
-    $(this._refresh_button).click(RefreshClickedEvent);
+    $(this._forfeit_button).click(ForfeitClickedEvent);
   }
 
   _get_card_obj = (player_card) =>

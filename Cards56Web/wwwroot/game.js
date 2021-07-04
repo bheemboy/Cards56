@@ -13,7 +13,7 @@ class Game
         this.bidPanel = bidPanel;
        
         this.table.SetNewGameClicked(this.onNewGameClicked);
-        this.table.SetRefreshClicked(this.onRefreshClicked);
+        this.table.SetForfeitClicked(this.onForfeitClicked);
         this.bidPanel.setBidBtnClicked(this.onBidEvent);
         
         this.gameState;
@@ -81,7 +81,7 @@ class Game
         }
         catch (error)
         {
-            self.LogMessage('Error Refreshing Game: ' + self.htmlEscape(error));
+            self.LogMessage('Error Registering Player: ' + self.htmlEscape(error));
         }
     }
 
@@ -143,6 +143,10 @@ class Game
                 if (this.gameState.TableInfo.GameCancelled)
                 {
                     this.table.ShowCenterMessage("Game Cancelled :(");
+                }
+                else if (this.gameState.TableInfo.GameForfeited)
+                {
+                    this.table.ShowCenterMessage("Game Forfeited");
                 }
                 else
                 {
@@ -250,16 +254,19 @@ class Game
         }
     }
 
-    onRefreshClicked = () =>
+    onForfeitClicked = () =>
     {
         let self = this;
         try
         {
-            this.hubConnection.invoke("RefreshState");
+            if (confirm("Are you sure you want to forfeit this game?"))
+            {
+                this.hubConnection.invoke("ForfeitGame");
+            }
         }
         catch (error)
         {
-            self.LogMessage('Error Refreshing Game: ' + self.htmlEscape(error));
+            self.LogMessage('Error Forfeiting Game: ' + self.htmlEscape(error));
         }
     }
 
@@ -315,7 +322,7 @@ class Game
     {
         let str_my_team_score = '';
         let str_opponent_score = '';
-        if (this.gameState.TableInfo.TeamScore && this.gameState.GameStage >= 4 && !this.gameState.TableInfo.GameCancelled)
+        if (this.gameState.TableInfo.TeamScore && this.gameState.GameStage >= 4 && !this.gameState.TableInfo.GameCancelled && !this.gameState.TableInfo.GameForfeited)
         {
             let my_team_target;
             let other_team_target;

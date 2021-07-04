@@ -19,6 +19,8 @@ namespace Cards56Lib
         public GameStage Stage {get; set;}
         [JsonProperty]
         public bool GameCancelled {get; set;}
+        [JsonProperty]
+        public bool GameForfeited {get; set;}
         public List<string> Deck;
         [JsonProperty]
         public List<Chair> Chairs;
@@ -51,6 +53,7 @@ namespace Cards56Lib
             TableName = tableName;
             Stage = GameStage.WaitingForPlayers;
             GameCancelled = false;
+            GameForfeited = false;
             Deck = new List<string>(); 
             WinningTeam = -1;
             WinningScore = 0;

@@ -407,6 +407,7 @@ namespace Cards56Lib
             Game.DealerPos = dealerPos;
             Game.Stage = GameStage.WaitingForPlayers;
             Game.GameCancelled = false;
+            Game.GameForfeited = false;
             Game.TeamScore = new List<int>(){0,0};
             Game.WinningTeam = -1;
             Game.WinningScore = 0;
@@ -538,6 +539,24 @@ namespace Cards56Lib
                 SendStateUpdatedEvents();
             }
         }
+        public void ForfeitGame(Player player)
+        {
+            if (Game.Stage < GameStage.PlayingCards) throw new GameNotStartedException();
+            if (Game.Stage > GameStage.PlayingCards) throw new GameIsOverException();
+            lock (_tableLock)
+            {
+                Game.GameForfeited = true;
+                Game.Stage = GameStage.GameOver;
+
+                // Give opposite team all remaining points
+                Game.TeamScore[T.TeamOf(player.Position+1)] = T.MaxBid - TeamScoreOf(player.Position); 
+
+                // Update coolies and kodis
+                UpdateCooliesAndKodies();
+
+                SendStateUpdatedEvents();
+            }
+        }
         private void ProcessAndAddNewRound()
         {
             // Find the winner and the score for the round
@@ -608,14 +627,6 @@ namespace Cards56Lib
             {
                 // Update coolies and kodis
                 UpdateCooliesAndKodies();
-
-                // Print summary
-                string BidderWinLose = (TeamScoreOf(Game.Bid.HighBidder) >= (IsThani? 8 : Game.Bid.HighBid))? "WON" : "LOST";
-                System.Console.WriteLine($"Team [{T.TeamOf(Game.Bid.HighBidder)}] bid [{Game.Bid.HighBid}] {BidderWinLose}");
-
-                // return any remain cards players have
-                Game.Chairs.ForEach(c => Deck.ReturnCards(c.Cards));
-                if (!Game.TrumpExposed && Game.TrumpCard != "") Deck.ReturnCard(Game.TrumpCard);
             }
             else
             {
@@ -696,6 +707,12 @@ namespace Cards56Lib
 
             for (int i=0; i<Game.CoolieCount.Count; i++)
                 if (Game.CoolieCount[i]<=0) InstallKodi(i);
+
+            // return all player cards and trump card to deck
+            ReturnCardsToDeck();
+
+            // Print summary
+            PrintGameSummary();
         }
         private void RemoveKodi(int player)
         {
@@ -711,6 +728,18 @@ namespace Cards56Lib
             Game.CoolieCount = new List<int>(){T.BaseCoolieCount,T.BaseCoolieCount};
             Game.KodiIrakkamRound[team] = true;
             Game.KodiIrakkamRound[(team+1)%2] = false;
+        }
+        private void PrintGameSummary()
+        {
+            string BidderWinLose = (TeamScoreOf(Game.Bid.HighBidder) >= (IsThani? 8 : Game.Bid.HighBid))? "WON" : "LOST";
+            System.Console.WriteLine($"Team [{T.TeamOf(Game.Bid.HighBidder)}] bid [{Game.Bid.HighBid}] {BidderWinLose}");
+        }
+
+        private void ReturnCardsToDeck()
+        {
+            // return any remain cards players have
+            Game.Chairs.ForEach(c => Deck.ReturnCards(c.Cards));
+            if (!Game.TrumpExposed && Game.TrumpCard != "") Deck.ReturnCard(Game.TrumpCard);
         }
     }
 }

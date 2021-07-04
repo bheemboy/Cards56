@@ -113,7 +113,7 @@ body {
     font-weight: bold;
     text-align: center;
     display: block;
-    z-index: 501;
+    z-index: 99999;
     /* border: 1px solid white; */
 }
 
@@ -133,6 +133,7 @@ body {
     position: absolute;
     right: 0px;
     bottom: 0px;
+    z-index: 10;
 }
 
 .table-button {
@@ -156,8 +157,22 @@ body {
     color: white;
 }
 
-.logout {
-    margin-right: 0px;
+.table-button.forfeit:hover {
+    border: 1px solid #940303;
+    background-color: #fc4747;
+    color: white;
+}
+
+.table-button.disabled {
+    background-color: rgb(190, 220, 190);
+    border: 1px solid rgb(165, 165, 165);
+    color: rgb(165, 165, 165);
+}
+
+.table-button.disabled:hover {
+    background-color: rgb(190, 220, 190);
+    border: 1px solid rgb(165, 165, 165);
+    color: rgb(165, 165, 165);
 }
 
 .table-button.hidden {
@@ -176,7 +191,7 @@ body {
     transition: opacity 0.6s;
     margin-bottom: 15px;
     display: none;
-    z-index: 2000;
+    z-index: 99999;
 }
 
 /* .alert.visible {
