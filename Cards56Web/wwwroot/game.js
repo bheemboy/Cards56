@@ -454,7 +454,7 @@ class Game
             {
                 // sleep a little and then play the card
                 var self = this;
-                setTimeout(function() { self.hubConnection.invoke("PlayCard", autoplaycard, 2000); }, 200);
+                setTimeout(function() { self.hubConnection.invoke("PlayCard", autoplaycard, 2000); }, 1000);
             }
         }
     }
