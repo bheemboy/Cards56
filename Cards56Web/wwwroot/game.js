@@ -165,7 +165,7 @@ class Game
             }
             else if (0 == this.currentPlayer && !this.watchOnly)
             {
-                this.AutoPlayNextCardIfRequired(3000);
+                this.AutoPlayNextCardIfRequired(5000);
             }
         }
         catch (error)
