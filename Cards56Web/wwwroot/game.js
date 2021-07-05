@@ -164,7 +164,7 @@ class Game
             }
             else if (0 == this.currentPlayer && !this.watchOnly)
             {
-                this.AutoPlayNextCardIfRequired();
+                // this.AutoPlayNextCardIfRequired();
             }
         }
         catch (error)
@@ -454,7 +454,7 @@ class Game
             {
                 // sleep a little and then play the card
                 var self = this;
-                setTimeout(function() { self.hubConnection.invoke("PlayCard", autoplaycard, 2000); }, 1000);
+                setTimeout(function() { self.hubConnection.invoke("PlayCard", autoplaycard, 2000); }, 1500);
             }
         }
     }

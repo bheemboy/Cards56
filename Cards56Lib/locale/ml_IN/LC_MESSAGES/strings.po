@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ml_IN\n"
-"X-Generator: Poedit 2.3.1\n"
+"X-Generator: Poedit 3.0\n"
 
 msgid "Unknown Error."
 msgstr "അജ്ഞാത പിശക്."
@@ -18,28 +18,28 @@ msgid "Bidding has not yet started."
 msgstr "തിരക്ക് കൂട്ടല്ലേ മാഷെ വിളി തുടങ്ങിയിട്ടില്ല."
 
 msgid "Bidding is over."
-msgstr " വിളിയൊക്കെ കഴിഞ്ഞല്ലോ. അടുത്ത തവണ വിളിക്കാം ട്ടോ."
+msgstr "വിളിയൊക്കെ കഴിഞ്ഞല്ലോ. അടുത്ത തവണ വിളിക്കാം ട്ടോ."
 
 msgid "Bidding is not yet over."
 msgstr "വിളി ഇതുവരെ അവസാനിച്ചിട്ടില്ല."
 
 msgid "Waiting for {0} to play. It is not your turn."
-msgstr "തിരക്ക് കൂട്ടല്ലേ ആദ്യം {0} കളിക്കട്ടെ"
+msgstr "തിരക്ക് കൂട്ടല്ലേ ആദ്യം {0} കളിക്കട്ടെ."
 
 msgid "Bid must be between {0} and {1}."
 msgstr "വിളി {0} നും {1} നും ഇടയിലായിരിക്കണം."
 
 msgid "Passing is not allowed."
-msgstr "വിടൽ അനുവദനീയമല്ല"
+msgstr "വിടൽ അനുവദനീയമല്ല."
 
 msgid "Game not yet started."
-msgstr "കളി തുടങ്ങിയിട്ടില്ല"
+msgstr "കളി തുടങ്ങിയിട്ടില്ല."
 
 msgid "Game is over."
 msgstr "കളി കഴിഞ്ഞു."
 
 msgid "This is a thani game."
-msgstr "ഇത് തനികളിയാണ് കേട്ടോ"
+msgstr "ഇത് തനികളിയാണ് കേട്ടോ."
 
 msgid "You are not the high bidder. High bidder is {0}."
 msgstr "നിങ്ങൾ ഉയർന്ന ലേലം വിളിച്ചയാളല്ല. ഉയർന്ന ബിഡ്ഡർ {0} ആണ്."
@@ -48,16 +48,16 @@ msgid "Trump already selected."
 msgstr "തുരുപ്പു വെച്ചു കഴിഞ്ഞു."
 
 msgid "Trump not yet selected."
-msgstr "തുരുപ്പു വെച്ചിട്ടില്ല"
+msgstr "തുരുപ്പു വെച്ചിട്ടില്ല."
 
 msgid "All cards for the round are played."
 msgstr "ഈ റൗണ്ടിലെ ചീറ്റാല്ലാം ഇട്ടല്ലോ."
 
 msgid "You are already on the table."
-msgstr " തങ്ങൾ ടേബിളിൽ ഉണ്ടല്ലോ. പിന്നെ എന്താ പ്രശ്നം."
+msgstr "തങ്ങൾ ടേബിളിൽ ഉണ്ടല്ലോ. പിന്നെ എന്താ പ്രശ്നം."
 
 msgid "Table is full."
-msgstr "ഈ ടേബിൾ നിറഞ്ഞു ഇനി ഇതിൽ സ്ഥലമില്ല"
+msgstr "ഈ ടേബിൾ നിറഞ്ഞു ഇനി ഇതിൽ സ്ഥലമില്ല."
 
 msgid "Card not found."
 msgstr "കാർഡ് കണ്ടെത്തിയില്ല."
@@ -69,7 +69,7 @@ msgid "Cannot play trump suit."
 msgstr "തുരുപ്പു കളിയ്ക്കാൻ പാടില്ല ട്ടോ."
 
 msgid "Cannot play the trump card."
-msgstr "കാമത്തിയ ചീട്ടു കളിയ്ക്കാൻ ആയിട്ടില്ല"
+msgstr "കാമത്തിയ ചീട്ടു കളിയ്ക്കാൻ ആയിട്ടില്ല."
 
 msgid "Bidder must play THE trump card '{0}' immediately after exposing it."
 msgstr "കാമത്തിയ ചീട്ടു {0} കളിക്ക് മാഷെ. ഇത് എന്താ വെള്ളരിക്ക പട്ടണം ആണെന്ന് വിചാരിച്ചോ?"
@@ -120,4 +120,7 @@ msgid "Card play has not started"
 msgstr "ചീട്ടു കളിയ്ക്കാൻ സമയമായിട്ടില്ല"
 
 msgid "Too many watcher on chair"
-msgstr "കസേരയിൽ കാണികൾ കൂടൂതൽ ആണ് "
+msgstr "കസേരയിൽ കാണികൾ കൂടൂതൽ ആണ്"
+
+msgid "Watcher cannot forfeit"
+msgstr "കാണികൾ വിടാൻ പാടില്ലാ"

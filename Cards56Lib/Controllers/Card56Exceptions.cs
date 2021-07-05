@@ -271,4 +271,8 @@ namespace Cards56Lib
     {
         public TooManyWatchersOnChairException():base(Cards56Error.TooManyWatchersOnChair){}
     }
+    public class WatcherCannotForfeitException: Card56Exception
+    {
+        public WatcherCannotForfeitException():base(Cards56Error.WatcherCannotForfeit){}
+    }
 }

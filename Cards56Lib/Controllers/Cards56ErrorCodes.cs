@@ -35,6 +35,7 @@ namespace Cards56Lib
         public const int FirstBidderHasNoPointsException=30;
         public const int CardPlayNotStartedException=31;
         public const int TooManyWatchersOnChair=32;
+        public const int WatcherCannotForfeit=33;
         public static string[] MSG = 
         {
             "Unknown Error.",                                   // 0
@@ -70,6 +71,7 @@ namespace Cards56Lib
             "First bidder has no points. Game cancelled.",      // 30
             "Card play has not started",                        // 31
             "Too many watcher on chair",                        // 32
+            "Watcher cannot forfeit",                           // 33
         };
     }
 }
