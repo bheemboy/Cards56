@@ -18,6 +18,7 @@ class Game
         
         this.gameState;
         this.currentPlayer = -1;
+        this.AutoPlayTimer = null;
 
         // Setup websocket connection
         this.targeturl = '/Cards56Hub';
@@ -164,7 +165,7 @@ class Game
             }
             else if (0 == this.currentPlayer && !this.watchOnly)
             {
-                // this.AutoPlayNextCardIfRequired();
+                this.AutoPlayNextCardIfRequired(3000);
             }
         }
         catch (error)
@@ -191,6 +192,11 @@ class Game
         let self = this;
         try
         {
+            if (this.AutoPlayTimer)
+            {
+                clearTimeout(this.AutoPlayTimer);
+            }
+
             let shortName = card.shortName;
             if (shortName.substr(1) == "14")
             {
@@ -444,8 +450,9 @@ class Game
         }
     }
 
-    AutoPlayNextCardIfRequired = () =>
+    AutoPlayNextCardIfRequired = (timeout) =>
     {
+        this.AutoPlayTimer = null;
         // Check if autoplay has been requested 
         if (this.gameState.TableInfo.Rounds && this.gameState.TableInfo.Rounds.length > 0)
         {
@@ -454,7 +461,11 @@ class Game
             {
                 // sleep a little and then play the card
                 var self = this;
-                setTimeout(function() { self.hubConnection.invoke("PlayCard", autoplaycard, 2000); }, 1500);
+                this.AutoPlayTimer = setTimeout(function() 
+                {
+                    self.table.SetPlayerCardClicked(null);
+                    self.hubConnection.invoke("PlayCard", autoplaycard, 2000);
+                }, timeout);
             }
         }
     }
