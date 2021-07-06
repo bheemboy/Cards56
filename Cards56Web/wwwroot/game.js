@@ -493,6 +493,6 @@ class Game
     }
     LogMessage = (message) =>
     {
-        this.table.ShowAlertMessage(message, 2500);
+        this.table.ShowAlertMessage(message, 5000);
     }
 }
