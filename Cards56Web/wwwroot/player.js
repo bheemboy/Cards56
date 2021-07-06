@@ -96,17 +96,35 @@ class Player
     $(this._player_icon_div).addClass('team' + (val % 2));
   }
 
-  set_bid(val)
+  clear_bid()
   {
-    // val = 48;
-    if (val > 27)
+    $(this._bid_div).removeClass('high_bid').removeClass('current_bid').removeClass('previous_bid');
+  }
+
+  set_high_bid(val)
+  {
+    if (val>0)
     {
       $(this._bid_div)[0].textContent = val;
-      $(this._bid_div).addClass('visible');
-    } else
-    {
-      $(this._bid_div).removeClass('visible');
+      $(this._bid_div).addClass('high_bid');
     }
+    else
+    {
+      $(this._bid_div)[0].textContent = '';
+      $(this._bid_div).removeClass('high_bid');
+    }
+  }
+
+  set_current_bid(val)
+  {
+    $(this._bid_div)[0].textContent = (val==0) ? 'P' : val;
+    $(this._bid_div).addClass('current_bid');
+  }
+
+  set_previous_bid(val)
+  {
+    $(this._bid_div)[0].textContent = (val==0) ? 'P' : val;
+    $(this._bid_div).addClass('previous_bid');
   }
 
   set_focus(val)
