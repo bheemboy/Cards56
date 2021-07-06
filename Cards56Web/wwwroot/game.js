@@ -110,7 +110,7 @@ class Game
 
             this.SetPlayerTeamsAndNames();
             this.ShowDealer();
-            this.ShowHighBid();
+            this.ShowBids();
             if (this.high_bid != 57)
             {
                 this.table.ShowTrump((this.gameState.GameStage == 4), this.gameState.TrumpExposed, this.gameState.TrumpCard);
@@ -370,32 +370,49 @@ class Game
         this.table.ShowScores(this.my_team, str_my_team_score, str_opponent_score);
     }
 
-    ShowHighBid = () =>
+    ShowBids = () =>
     {
         this.high_bidder_posn = -1;
         this.high_bid = -1;
+
+        var bidShown = new Array(this.gameState.TableInfo.Chairs.length);
+        for (let i = 0; i < this.gameState.TableInfo.Chairs.length; i++)
+        {
+            this.players[i].clear_bid();
+            bidShown[i] = false;
+        }
+
         if (this.gameState.TableInfo.Bid)
         {
             this.high_bidder_posn = this._get_offsetted_player(this.gameState.TableInfo.Bid.HighBidder);
             this.high_bid = this.gameState.TableInfo.Bid.HighBid;
-            for (let i = 0; i < this.gameState.TableInfo.Chairs.length; i++)
+
+            if (this.gameState.GameStage >= 2 && this.gameState.GameStage <= 4)
             {
-                if (i == this.high_bidder_posn && this.high_bid >= 28)
+                // Show Highbid
+                this.players[this.high_bidder_posn].set_high_bid(this.high_bid);
+                bidShown[this.high_bidder_posn] = true;
+    
+                if (this.gameState.GameStage == 2)
                 {
-                    this.players[i].set_bid(this.high_bid);
+                    for (let i = this.gameState.TableInfo.Bid.BidHistory.length-1; i >= 0; i--)
+                    {
+                        var player_posn = this._get_offsetted_player(this.gameState.TableInfo.Bid.BidHistory[i].Position);
+                        if (!bidShown[player_posn])
+                        {
+                            bidShown[player_posn] = true;
+                            if (i == this.gameState.TableInfo.Bid.BidHistory.length-1)
+                            {
+                                this.players[player_posn].set_current_bid(this.gameState.TableInfo.Bid.BidHistory[i].Bid);
+                            }
+                            else
+                            {
+                                this.players[player_posn].set_previous_bid(this.gameState.TableInfo.Bid.BidHistory[i].Bid);
+                            }
+                        }
+                    }
                 }
-                else
-                {
-                    this.players[i].set_bid(0);
-                }
-            }
-        }
-        else
-        {
-            for (let i = 0; i < this.gameState.TableInfo.Chairs.length; i++)
-            {
-                this.players[i].set_bid(0);
-            }
+            }    
         }
     }
 
