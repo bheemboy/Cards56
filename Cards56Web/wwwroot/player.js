@@ -117,13 +117,13 @@ class Player
 
   set_current_bid(val)
   {
-    $(this._bid_div)[0].textContent = (val==0) ? 'P' : val;
+    $(this._bid_div)[0].textContent = (val==0) ? '' : val;
     $(this._bid_div).addClass('current_bid');
   }
 
   set_previous_bid(val)
   {
-    $(this._bid_div)[0].textContent = (val==0) ? 'P' : val;
+    $(this._bid_div)[0].textContent = (val==0) ? '' : val;
     $(this._bid_div).addClass('previous_bid');
   }
 
