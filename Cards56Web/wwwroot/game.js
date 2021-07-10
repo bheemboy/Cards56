@@ -400,14 +400,17 @@ class Game
                         var player_posn = this._get_offsetted_player(this.gameState.TableInfo.Bid.BidHistory[i].Position);
                         if (!bidShown[player_posn])
                         {
-                            bidShown[player_posn] = true;
-                            if (i == this.gameState.TableInfo.Bid.BidHistory.length-1)
+                            if (this.gameState.TableInfo.Bid.BidHistory[i].Bid > 0)
                             {
-                                this.players[player_posn].set_current_bid(this.gameState.TableInfo.Bid.BidHistory[i].Bid);
-                            }
-                            else
-                            {
-                                this.players[player_posn].set_previous_bid(this.gameState.TableInfo.Bid.BidHistory[i].Bid);
+                                bidShown[player_posn] = true;
+                                if (i == this.gameState.TableInfo.Bid.BidHistory.length-1)
+                                {
+                                    this.players[player_posn].set_current_bid(this.gameState.TableInfo.Bid.BidHistory[i].Bid);
+                                }
+                                else
+                                {
+                                    this.players[player_posn].set_previous_bid(this.gameState.TableInfo.Bid.BidHistory[i].Bid);
+                                }
                             }
                         }
                     }
