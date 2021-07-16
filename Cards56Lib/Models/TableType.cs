@@ -7,12 +7,12 @@ namespace Cards56Lib
     public class TableType
     {
         public int Type {get;}
-        private int[] _BaseCoolieCount = new int[] {5,6,7};
+        private int[] _BaseCoolieCount = new int[] {5,6,7,6,7};
         public int BaseCoolieCount => _BaseCoolieCount[Type]; 
-        private int[] _MaxPlayers = new int[] {4,6,8};
+        private int[] _MaxPlayers = new int[] {4,6,8,6,8};
         public int MaxPlayers => _MaxPlayers[Type];
         public int PlayersPerTeam => MaxPlayers/2; 
-        private int[] _DeckSize = new int[] {32,48,64};
+        private int[] _DeckSize = new int[] {32,48,64,48,64};
         public int DeckSize => _DeckSize[Type];
         public const string CLUBS="Clubs";
         public const string HEARTS="Hearts";
@@ -21,6 +21,8 @@ namespace Cards56Lib
         public List<string> Suits => new List<string>{"h","s","d","c"};
         private List<string>[] _Ranks = new List<string>[] {
             new List<string>{"10","1","9","11"},
+            new List<string>{"12","13","10","1","9","11"},
+            new List<string>{"7","8","12","13","10","1","9","11"},
             new List<string>{"12","13","10","1","9","11"},
             new List<string>{"7","8","12","13","10","1","9","11"}
         };
