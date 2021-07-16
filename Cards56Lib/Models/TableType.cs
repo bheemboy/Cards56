@@ -7,18 +7,24 @@ namespace Cards56Lib
     public class TableType
     {
         public int Type {get;}
-        public int BaseCoolieCount => (Type==0)? 5: (Type==1)? 6: 7; 
-        public int MaxPlayers => (Type==0)? 4: (Type==1)? 6: 8;
+        private int[] _BaseCoolieCount = new int[] {5,6,7};
+        public int BaseCoolieCount => _BaseCoolieCount[Type]; 
+        private int[] _MaxPlayers = new int[] {4,6,8};
+        public int MaxPlayers => _MaxPlayers[Type];
         public int PlayersPerTeam => MaxPlayers/2; 
-        public int DeckSize => (Type==0)? 32: (Type==1)? 48: 64;
+        private int[] _DeckSize = new int[] {32,48,64};
+        public int DeckSize => _DeckSize[Type];
         public const string CLUBS="Clubs";
         public const string HEARTS="Hearts";
         public const string DIAMOND="Diamond";
         public const string SPADE="Spade";
         public List<string> Suits => new List<string>{"h","s","d","c"};
-        public List<string> Ranks => (Type==0)? new List<string>{"10","1","9","11"}: 
-                                     (Type==1)? new List<string>{"12","13","10","1","9","11"}:
-                                                new List<string>{"7","8","12","13","10","1","9","11"};
+        private List<string>[] _Ranks = new List<string>[] {
+            new List<string>{"10","1","9","11"},
+            new List<string>{"12","13","10","1","9","11"},
+            new List<string>{"7","8","12","13","10","1","9","11"}
+        };
+        public List<string> Ranks => _Ranks[Type];
         public int PlayerAt(int position) => position%MaxPlayers;
         public int TeamOf(int position) => position%2;
         public bool SameTeam(int posn1, int posn2) => posn1%2 == posn2%2;
