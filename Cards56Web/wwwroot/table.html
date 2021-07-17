@@ -48,7 +48,8 @@ $(document).ready(function ()
 	let w = getParamValue("watch");
 	watch = (w != null && w=='true')?true:false;
 
-	player_count = (tabletype==0)? 4: (tabletype == 1)? 6: 8;
+  let _player_count = [4,6,8,6,8];
+	player_count = _player_count[tabletype];
 
 	table = new Table(main_div, player_count);
 	bidPanel = new BidPanel(main_div);
