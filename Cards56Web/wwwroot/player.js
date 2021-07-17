@@ -21,7 +21,7 @@ class Player
     {
       add_cls = " 4" + posn_class_4[this._posn];
     }
-    else if (this._table_type == 1)
+    else if (this._table_type == 1 || this._table_type == 3)
     {
       add_cls = " 6" + posn_class_6[this._posn];
     }
