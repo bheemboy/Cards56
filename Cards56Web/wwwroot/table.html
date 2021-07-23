@@ -11,6 +11,7 @@
   <!-- JQUERY UI CSS-->
   <link rel="stylesheet" type="text/css" href="table.css">
   <link rel="stylesheet" type="text/css" href="bid_panel.css">
+  <link rel="stylesheet" type="text/css" href="open_bid_panel.css">
   <link rel="stylesheet" type="text/css" href="player.css">
   <script src="lib/jquery-1.7.min.js"></script>
   <script src="lib/signalr.js"></script>
@@ -23,6 +24,7 @@
   </div>
   <!-- load this at the bottom so the #card-table element exists -->
   <script src="bid_panel.js"></script>
+  <script src="open_bid_panel.js"></script>
   <script src="player.js"></script>
   <script src="game.js"></script>
   <script src="table.js"></script>
@@ -52,7 +54,14 @@ $(document).ready(function ()
 	player_count = _player_count[tabletype];
 
 	table = new Table(main_div, player_count);
-	bidPanel = new BidPanel(main_div);
+  if (tabletype == 3 || tabletype == 4)
+  {
+    bidPanel = new BidPanelOpenTrump(main_div);
+  }
+  else
+  {
+    bidPanel = new BidPanel(main_div);
+  }
 
 	for (let i = 0; i < player_count; i++)
 	{

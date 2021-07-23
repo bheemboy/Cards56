@@ -1,0 +1,36 @@
+.open_bid_panel {
+    position: absolute;
+    left: 275px;
+    top: 100px;
+    /* width: 450px;
+    height: 400px; */
+    padding: 5px;
+    background-color: rgb(168, 255, 168, 0.80);
+    border: 1px solid black;
+    border-radius: 15px;
+    display: none;
+    z-index: 500;
+}
+
+.obidbtn {
+    background-color: lightgreen; /* Green */
+    border: 1px solid #4CAF50;
+    color: #227725;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    float: right;
+    height: 35px;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-radius: 8px;
+}
+
+.obidbtn-bid {
+    width: 40px;
+}
+
+.obidtable {
+    margin: 0 auto;
+    /* margin: 0 auto 0 auto */
+}
