@@ -5,7 +5,8 @@ class BidPanelOpenTrump
     constructor(main_div)
     {
         this.bid_panel = $('<div/>').addClass('open_bid_panel').appendTo($(main_div)[0]);
-        $(this.bid_panel)[0].innerHTML = "<button class='test_button'>test</button>";
+        // $(this.bid_panel)[0].innerHTML = "<button class='obidbtn'>testing text</button>";
+        $(this.bid_panel)[0].innerHTML = this._getBidPanelMarkup();
     }
 
     setBidBtnClicked = (BidBtnClickEvent) =>
@@ -46,7 +47,7 @@ class BidPanelOpenTrump
         bidMarkup += this._getBiddingRowMarkup([1, 2, 3]);
         bidMarkup += this._getBiddingRowMarkup([4, 5, 6]);
         bidMarkup += this._getBiddingRowMarkup([7, 8, 9]);
-        bidMarkup += this._getBiddingRowMarkup([0]);
+        bidMarkup += this._getBiddingRowMarkup(['+', 0, 'Del']);
         return bidMarkup;
     }
 
