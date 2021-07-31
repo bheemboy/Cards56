@@ -44,10 +44,13 @@ class BidPanelOpenTrump
     _getBidPanelMarkup = () =>
     {
         let bidMarkup='';
-        bidMarkup += this._getBiddingRowMarkup([1, 2, 3]);
-        bidMarkup += this._getBiddingRowMarkup([4, 5, 6]);
-        bidMarkup += this._getBiddingRowMarkup([7, 8, 9]);
-        bidMarkup += this._getBiddingRowMarkup(['+', 0, 'Del']);
+        bidMarkup += this._getBiddingRowMarkup([1, 2, 3, '♡']);
+        bidMarkup += this._getBiddingRowMarkup([4, 5, 6, '♤']);
+        bidMarkup += this._getBiddingRowMarkup([7, 8, 9, '♢']);
+        bidMarkup += this._getBiddingRowMarkup(['+', 0, 'Del', '♧']);
+        bidMarkup += "<input type=text class='obideditbtn'>",
+        bidMarkup += "<button class='obidpassbtn'>Bid/Pass</button>",
+        bidMarkup += "<button class='obidbtn'>🚫</button>";
         return bidMarkup;
     }
 
