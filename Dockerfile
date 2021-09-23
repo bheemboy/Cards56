@@ -1,3 +1,7 @@
+# Use the following commands to build and push
+# docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:2021.09.22 .
+# docker push --all-tags bheemboy/cards56web
+
 # Stage 1
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /build
