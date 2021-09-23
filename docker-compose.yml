@@ -16,4 +16,4 @@ services:
             - ASPNETCORE_Kestrel__Certificates__Default__Path=${CERTIFICATE_NAME}
         volumes:
             - ${CERTIFICATE_PATH}:/https:ro
-
+            - ${ACMECHALLENGE_PATH}:/webapp/wwwroot/.well-known/acme-challenge
