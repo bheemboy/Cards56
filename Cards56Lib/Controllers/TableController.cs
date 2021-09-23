@@ -703,6 +703,7 @@ namespace Cards56Lib
             // If bidding team won
             if (TeamScoreOf(Game.Bid.HighBidder) >= (IsThani? 8 : Game.Bid.HighBid))
             {
+                Game.WinningTeam = T.TeamOf(Game.Bid.HighBidder);
                 Game.WinningScore = T.GetWinPointsForBid(Game.Bid.HighBid);
                 Game.CoolieCount[T.TeamOf(Game.Bid.HighBidder)] += T.GetWinPointsForBid(Game.Bid.HighBid);
                 Game.CoolieCount[T.TeamOf(Game.Bid.HighBidder+1)] -= T.GetWinPointsForBid(Game.Bid.HighBid);
@@ -720,6 +721,7 @@ namespace Cards56Lib
             }
             else
             {
+                Game.WinningTeam = T.TeamOf(Game.Bid.HighBidder+1);
                 Game.WinningScore = T.GetLosePointsForBid(Game.Bid.HighBid);
                 Game.CoolieCount[T.TeamOf(Game.Bid.HighBidder)] -= T.GetLosePointsForBid(Game.Bid.HighBid);
                 Game.CoolieCount[T.TeamOf(Game.Bid.HighBidder+1)] += T.GetLosePointsForBid(Game.Bid.HighBid);
