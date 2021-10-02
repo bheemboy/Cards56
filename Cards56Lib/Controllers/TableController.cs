@@ -561,11 +561,12 @@ namespace Cards56Lib
         }
         public void ForfeitGame(Player player)
         {
-            if (player.WatchOnly) throw new WatcherCannotForfeitException();
-            if (Game.Stage < GameStage.PlayingCards) throw new GameNotStartedException();
-            if (Game.Stage > GameStage.PlayingCards) throw new GameIsOverException();
             lock (_tableLock)
             {
+                if (player.WatchOnly) throw new WatcherCannotForfeitException();
+                if (Game.Stage < GameStage.PlayingCards) throw new GameNotStartedException();
+                if (Game.Stage > GameStage.PlayingCards) throw new GameIsOverException();
+                
                 Game.GameForfeited = true;
                 Game.Stage = GameStage.GameOver;
 
