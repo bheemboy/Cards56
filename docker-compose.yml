@@ -7,13 +7,15 @@ services:
         dns:
             - 1.1.1.1
         ports:
-            - "5000:80"
-            - "5001:443"
+            - "80:80"
+            #- "5000:80"
+            #- "5001:443"
         environment:
             - TZ=America/Los_Angeles
-            - ASPNETCORE_URLS=https://+;http://+
-            - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERTIFICATE_PWD}
-            - ASPNETCORE_Kestrel__Certificates__Default__Path=${CERTIFICATE_NAME}
+            - ASPNETCORE_URLS=http://+:5000
+            #- ASPNETCORE_URLS=https://+;http://+
+            #- ASPNETCORE_Kestrel__Certificates__Default__Password=${CERTIFICATE_PWD}
+            #- ASPNETCORE_Kestrel__Certificates__Default__Path=${CERTIFICATE_NAME}
         volumes:
-            - ${CERTIFICATE_PATH}:/https:ro
+            #- ${CERTIFICATE_PATH}:/https:ro
             - ${ACMECHALLENGE_PATH}:/webapp/wwwroot/.well-known/acme-challenge
