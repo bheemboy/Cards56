@@ -19,18 +19,22 @@ ENV ASPNETCORE_URLS=http://+:5000
 WORKDIR /webapp
 COPY --from=build /webapp .
 
+COPY ./scripts /scripts
+RUN chmod -R 755 /scripts/*.sh
+
 RUN apt-get update; \
-    apt-get install -y nginx; \
+    apt-get install -y nginx certbot python3-certbot-nginx; \
     rm /etc/nginx/sites-enabled/default; \
     mkdir -p /etc/nginx/ssl; \
-    openssl req -x509 -subj /CN=localhost -days 365 -set_serial 2 -newkey rsa:4096 -keyout /etc/nginx/ssl/cert.key -nodes -out /etc/nginx/ssl/cert.pem
+    openssl req -x509 -subj /CN=localhost -days 365 -set_serial 2 -newkey rsa:4096 \
+        -keyout /etc/nginx/ssl/privkey.pem -nodes \
+        -out /etc/nginx/ssl/fullchain.pem; \
+    mkdir -p /etc/letsencrypt/renewal-hooks/deploy; \
+    ln -s /scripts/01-reload-nginx.sh /etc/letsencrypt/renewal-hooks/deploy/01-reload-nginx.sh
 
 COPY ./nginx/sites-available/56cards.net /etc/nginx/sites-available/56cards.net
 RUN ln -s /etc/nginx/sites-available/56cards.net /etc/nginx/sites-enabled/56cards.net
 
-COPY ./startup.sh /webapp/startup.sh
-RUN chmod 755 /webapp/startup.sh
-
-CMD ["sh", "/webapp/startup.sh"]
+CMD ["sh", "/scripts/startup.sh"]
 
 HEALTHCHECK CMD curl -f http://localhost/ || exit 1
