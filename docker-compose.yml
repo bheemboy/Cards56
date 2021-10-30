@@ -1,19 +1,11 @@
 version: "3"
 services:
     web:
-        image: bheemboy/cards56web
-        container_name: cards56web
+        image: bheemboy/cards56web2
+        container_name: cards56web2
         restart: unless-stopped
         dns:
             - 1.1.1.1
         ports:
-            - "5000:80"
-            - "5001:443"
-        environment:
-            - TZ=America/Los_Angeles
-            - ASPNETCORE_URLS=https://+;http://+
-            - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERTIFICATE_PWD}
-            - ASPNETCORE_Kestrel__Certificates__Default__Path=${CERTIFICATE_NAME}
-        volumes:
-            - ${CERTIFICATE_PATH}:/https:ro
-            - ${ACMECHALLENGE_PATH}:/webapp/wwwroot/.well-known/acme-challenge
+            - "80:80"
+            - "443:443"
