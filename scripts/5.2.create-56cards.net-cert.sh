@@ -8,6 +8,11 @@ server="https://acme-staging-v02.api.letsencrypt.org/directory"
 
 if [ "$1" == "production" ]; then
     server="https://acme-v02.api.letsencrypt.org/directory"
+elif [ "$1" == "staging" ]; then
+    server="https://acme-v02.api.letsencrypt.org/directory"
+else
+    echo "run script with parameter 'staging' or 'production'"
+    exit 255
 fi
 
 certbot certonly -n --manual --preferred-challenges=http \
@@ -21,10 +26,11 @@ certbot certonly -n --manual --preferred-challenges=http \
       --config-dir /home/rehman/docker/ssl/letsencrypt/config \
       --logs-dir /home/rehman/docker/ssl/letsencrypt/logs
 
-docker exec -it cards56web service nginx stop
-
-cp /home/rehman/docker/ssl/letsencrypt/config/live/56cards.net/fullchain.pem /home/rehman/docker/ssl/fullchain.pem
-cp /home/rehman/docker/ssl/letsencrypt/config/live/56cards.net/privkey.pem /home/rehman/docker/ssl/privkey.pem
-
-docker exec -it cards56web service nginx start
-
+# If the certificate file is newer
+newcertpath="/home/rehman/docker/ssl/letsencrypt/config/live/56cards.net/"
+existingcertpath="/home/rehman/docker/ssl/"
+if [ "${newcertpath}fullchain.pem" -nt "${existingcertpath}fullchain.pem" ]; then
+    cp "${newcertpath}fullchain.pem" "${existingcertpath}fullchain.pem"
+    cp "${newcertpath}privkey.pem" "${existingcertpath}privkey.pem"
+    docker exec -it cards56web service nginx reload
+fi

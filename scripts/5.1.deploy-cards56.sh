@@ -15,12 +15,6 @@ mkdir -p /home/rehman/docker/cards56web
 mkdir -p /home/rehman/acme-challenge
 mkdir -p /home/rehman/docker/ssl
 
-# generate self signed certificates if needed
-file="/home/rehman/docker/ssl/fullchain.pem"
-if [ ! -e "$file" ]; then
-    openssl req -x509 -subj /CN=localhost -days 365 -set_serial 2 -newkey rsa:4096 -keyout /home/rehman/docker/ssl/privkey.pem -nodes -out /home/rehman/docker/ssl/fullchain.pem
-fi
-
 # download files if needed
 file="/home/rehman/docker/cards56web/docker-compose.yml"
 if [ ! -e "$file" ]; then
@@ -32,7 +26,17 @@ if [ ! -e "$file" ]; then
     chmod +x /home/rehman/docker/cards56web/acme-cleanup.sh
 fi
 
+# generate self signed certificates if needed
+file="/home/rehman/docker/ssl/fullchain.pem"
+if [ ! -e "$file" ]; then
+    openssl req -x509 -subj /CN=localhost -days 365 -set_serial 2 -newkey rsa:4096 -keyout /home/rehman/docker/ssl/privkey.pem -nodes -out /home/rehman/docker/ssl/fullchain.pem
+fi
+
 # run the container
 cd /home/rehman/docker/cards56web
 docker-compose up -d
 cd -
+
+# Run script to generate letsencrypt certificate if needed
+source 5.2.create-56cards.net-cert.sh production
+
