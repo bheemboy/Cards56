@@ -7,7 +7,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /build
 COPY . .
 RUN dotnet publish Cards56Web.sln -c Release -o /webapp
-RUN mkdir -p /webapp/wwwroot/.well-known/acme-challenge
+RUN mkdir -p /webapp/wwwroot/.well-known
 
 # Stage 2
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS final
@@ -27,8 +27,7 @@ RUN apt-get update; \
 
 COPY ./nginx/sites-available/56cards.net /etc/nginx/sites-available/56cards.net
 RUN ln -s /etc/nginx/sites-available/56cards.net /etc/nginx/sites-enabled/56cards.net; \
-    rm /etc/nginx/sites-enabled/default; \
-    mkdir -p /etc/nginx/ssl
+    rm /etc/nginx/sites-enabled/default
 
 CMD ["sh", "/scripts/startup.sh"]
 
