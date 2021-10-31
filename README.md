@@ -9,10 +9,10 @@ This is a multi-player online card game web application written in .NET core and
 2. Remove any previous instances
 ```bash
 # stop and remove any running instances of cards56web
-docker rm -f cards56web2
+docker rm -f cards56web
 
 # get latest version of cards56web
-docker pull bheemboy/cards56web2
+docker pull bheemboy/cards56web
 
 # remove any dangling images
 docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
@@ -32,12 +32,12 @@ You can now access the application using your browser. It will be running https 
 
 4. To get proper certificate from letsencrypt, run the following command. This assumes that you own the 56cards.net domain.
 ```
-docker exec -it cards56web2 /scripts/create-cert.sh production
+docker exec -it cards56web /scripts/create-cert.sh production
 ```
 
 5. Set up a cron job to autmatically renew the letsencrypt certificate. I added the following to crontab
 ```bash
-0 6 * * thu /snap/bin/docker exec -it cards56web2 certbot renew
+0 6 * * thu /snap/bin/docker exec -it cards56web certbot renew
 ``` 
 
 ## WINDOWS: Setting up development environment for this project

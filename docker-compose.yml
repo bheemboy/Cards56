@@ -1,11 +1,15 @@
 version: "3"
 services:
     web:
-        image: bheemboy/cards56web2
-        container_name: cards56web2
+        image: bheemboy/cards56web
+        container_name: cards56web
         restart: unless-stopped
         dns:
             - 1.1.1.1
         ports:
             - "80:80"
             - "443:443"
+        volumes:
+            - ${CERTIFICATE_PATH}:/etc/nginx/ssl
+            - ${ACMECHALLENGE_PATH}:/webapp/wwwroot/.well-known/acme-challenge
+
