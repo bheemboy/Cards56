@@ -1,2 +1,2 @@
 #!/bin/bash
-rm -f ~/acme-challenge/$CERTBOT_TOKEN
+rm -f /home/rehman/acme-challenge/$CERTBOT_TOKEN
