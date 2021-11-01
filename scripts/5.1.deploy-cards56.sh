@@ -29,24 +29,16 @@ docker pull bheemboy/cards56web
 # remove any dangling images
 docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 
-# download files if needed
-file=${cards56webdir}/docker-compose.yml
-if [ ! -e $file ]; then
-    wget -P ${cards56webdir} https://raw.githubusercontent.com/bheemboy/Cards56/master/.env
-    wget -P ${cards56webdir} https://raw.githubusercontent.com/bheemboy/Cards56/master/docker-compose.yml
-fi
-
-file=${ssldir}/acme-auth.sh
-if [ ! -e $file ]; then
-    wget -P ${ssldir} https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-auth.sh
-    wget -P ${ssldir} https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-cleanup.sh
-    chmod +x ${ssldir}/acme-auth.sh
-    chmod +x ${ssldir}/acme-cleanup.sh
-fi
+# re-download files
+wget -P ${cards56webdir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/.env
+wget -P ${cards56webdir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/docker-compose.yml
+wget -P ${ssldir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-auth.sh
+wget -P ${ssldir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-cleanup.sh
+chmod +x ${ssldir}/acme-auth.sh
+chmod +x ${ssldir}/acme-cleanup.sh
 
 # generate self signed certificates if needed
-file=${ssldir}/fullchain.pem
-if [ ! -e $file ]; then
+if [ ! -e ${ssldir}/fullchain.pem ]; then
     openssl req -x509 -subj /CN=localhost -days 365 -set_serial 2 -newkey rsa:4096 -keyout ${ssldir}/privkey.pem -nodes -out ${ssldir}/fullchain.pem
 fi
 
