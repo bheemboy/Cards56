@@ -23,8 +23,8 @@ docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 ```bash
 # Get docker-compose.yml from github
 mkdir -p ~/docker
-wget -P ~/docker --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.1.deploy-cards56.sh
-wget -P ~/docker --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.2.renew-56cards.net-cert.sh
+rm ~/docker/5.1.deploy-cards56.sh; wget -P ~/docker --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.1.deploy-cards56.sh
+rm ~/docker/5.2.renew-56cards.net-cert.sh; wget -P ~/docker --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.2.renew-56cards.net-cert.sh
 chmod +x ~/docker/5.*.sh
 
 bash ~/docker/5.1.deploy-cards56.sh production

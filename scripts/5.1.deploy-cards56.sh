@@ -30,10 +30,10 @@ docker pull bheemboy/cards56web
 docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 
 # re-download files
-wget -P ${cards56webdir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/.env
-wget -P ${cards56webdir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/docker-compose.yml
-wget -P ${ssldir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-auth.sh
-wget -P ${ssldir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-cleanup.sh
+rm ${cards56webdir}/.env; wget -P ${cards56webdir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/.env
+rm ${cards56webdir}/docker-compose.yml; wget -P ${cards56webdir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/docker-compose.yml
+rm ${ssldir}/acme-auth.sh ; wget -P ${ssldir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-auth.sh
+rm ${ssldir}/acme-cleanup.sh ;wget -P ${ssldir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-cleanup.sh
 chmod +x ${ssldir}/acme-auth.sh
 chmod +x ${ssldir}/acme-cleanup.sh
 
