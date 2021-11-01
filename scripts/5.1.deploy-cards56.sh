@@ -23,6 +23,7 @@ mkdir -p ${cards56webdir}
 mkdir -p ${ssldir}/acme-challenge
 
 # stop and remove any running instances of cards56web
+docker stop cards56web
 docker rm -f cards56web
 # get latest version of cards56web
 docker pull bheemboy/cards56web
