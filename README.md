@@ -4,9 +4,9 @@ This is a multi-player online card game web application written in .NET core and
 
 ## Running this application in docker
 
-1. This docker is coded for 56cards.net. For running other domains some of the code needs to be changed.
+This docker is coded with an intention to depoy for the domain 56cards.net. That said, it can be run for other domains also. However, some of the code that refers to 56cards.net needs to be changed.
 
-2. Remove any previous instances
+1. Remove any previous instances of the container
 ```bash
 # stop and remove any running instances of cards56web
 docker rm -f cards56web
@@ -19,11 +19,18 @@ docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 
 ```
 
-3. Download `docker-compose.yml` and run it
+3. Download `5.1.deploy-cards56.sh` and run it
 ```bash
 # Get docker-compose.yml from github
-mkdir -p ~/docker/cards56web
-wget -P ~/docker/cards56web https://raw.githubusercontent.com/bheemboy/Cards56/master/docker-compose.yml
+mkdir -p ~/docker
+wget -P ~/docker https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.0.prep-directories.sh
+wget -P ~/docker https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.1.deploy-cards56.sh
+wget -P ~/docker https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.2.create-56cards.net-cert.sh
+wget -P ~/docker https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.3.renew-56cards.net-cert.sh
+
+chmod +x ~/docker/5.*.sh
+
+bash ~/docker/5.1.deploy-cards56.sh
 
 # launch docker container
 docker-compose -f ~/docker/cards56web/docker-compose.yml up -d

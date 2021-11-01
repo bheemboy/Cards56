@@ -1,15 +1,15 @@
 #!/bin/bash
 
-/usr/bin/certbot renew --work-dir /home/rehman/docker/ssl/letsencrypt/work \
-                       --config-dir /home/rehman/docker/ssl/letsencrypt/config \
-                       --logs-dir /home/rehman/docker/ssl/letsencrypt/logs
+source /home/rehman/docker/5.0.include-paths.sh
+
+/usr/bin/certbot renew --work-dir ${letsencryptdir}/work \
+                       --config-dir ${letsencryptdir}/config \
+                       --logs-dir ${letsencryptdir}/logs
 
 # If the certificate file is newer
-newcertpath="/home/rehman/docker/ssl/letsencrypt/config/live/56cards.net/"
-existingcertpath="/home/rehman/docker/ssl/"
-if [ "${newcertpath}fullchain.pem" -nt "${existingcertpath}fullchain.pem" ]; then
-    cp "${newcertpath}fullchain.pem" "${existingcertpath}fullchain.pem"
-    cp "${newcertpath}privkey.pem" "${existingcertpath}privkey.pem"
+if [ "${56cardscertdir}fullchain.pem" -nt "${ssldir}fullchain.pem" ]; then
+    cp "${56cardscertdir}fullchain.pem" "${ssldir}fullchain.pem"
+    cp "${56cardscertdir}privkey.pem" "${ssldir}privkey.pem"
     docker exec -it cards56web service nginx reload
 fi
 
