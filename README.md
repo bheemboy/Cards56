@@ -14,7 +14,7 @@ sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 ```
 
-2. Download `5.1.deploy-cards56.sh` and run it. Then you can access the application by going to https://65cards.net.
+2. Download `5.1.deploy-cards56.sh` and run it. Then you can access the application by going to https://56cards.net.
 ```bash
 # Get docker-compose.yml from github
 mkdir -p ~/docker
