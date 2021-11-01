@@ -20,8 +20,7 @@ letsencryptdir="${ssldir}/letsencrypt"
 livecertdir="${letsencryptdir}/config/live/56cards.net"
 
 mkdir -p ${cards56webdir}
-mkdir -p ${cards56webdir}/acme-challenge
-mkdir -p ${ssldir}
+mkdir -p ${ssldir}/acme-challenge
 
 # stop and remove any running instances of cards56web
 docker rm -f cards56web
@@ -35,10 +34,14 @@ file=${cards56webdir}/docker-compose.yml
 if [ ! -e $file ]; then
     wget -P ${cards56webdir} https://raw.githubusercontent.com/bheemboy/Cards56/master/.env
     wget -P ${cards56webdir} https://raw.githubusercontent.com/bheemboy/Cards56/master/docker-compose.yml
-    wget -P ${cards56webdir} https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-auth.sh
-    wget -P ${cards56webdir} https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-cleanup.sh
-    chmod +x ${cards56webdir}/acme-auth.sh
-    chmod +x ${cards56webdir}/acme-cleanup.sh
+fi
+
+file=${ssldir}/acme-auth.sh
+if [ ! -e $file ]; then
+    wget -P ${ssldir} https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-auth.sh
+    wget -P ${ssldir} https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-cleanup.sh
+    chmod +x ${ssldir}/acme-auth.sh
+    chmod +x ${ssldir}/acme-cleanup.sh
 fi
 
 # generate self signed certificates if needed
@@ -54,8 +57,8 @@ cd -
 
 # Generate letsencrypt certificate if needed
 certbot certonly -n --manual --preferred-challenges=http \
-      --manual-auth-hook "${cards56webdir}/acme-auth.sh" \
-      --manual-cleanup-hook "${cards56webdir}/acme-cleanup.sh" \
+      --manual-auth-hook "${ssldir}/acme-auth.sh" \
+      --manual-cleanup-hook "${ssldir}/acme-cleanup.sh" \
       --email sunil.rehman@gmail.com \
       --server $server \
       --agree-tos \
