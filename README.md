@@ -36,7 +36,7 @@ bash 5.1.deploy-cards56.sh production
 
 ## WINDOWS: Setting up development environment for this project
 
-1. Download and install asp.net core 3.1 sdk
+1. Download and install asp.net core 6.0 sdk
 
 2. Download and install Visual Studio Code
 
@@ -54,12 +54,12 @@ cd Cards56
 wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
 ```
-2. Install asp.net core 3.1 sdk
+2. Install asp.net core 6.0 sdk
 ```
 sudo apt-get update; \
   sudo apt-get install -y apt-transport-https && \
   sudo apt-get update && \
-  sudo apt-get install -y dotnet-sdk-3.1
+  sudo apt-get install -y dotnet-sdk-6.0
 ```
 3. Download and install Visual Studio Code
 

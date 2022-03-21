@@ -1,9 +1,9 @@
 # Use the following commands to build and push
-# docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:2022.01.29 .
+# docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:2022.03.21 .
 # docker push --all-tags bheemboy/cards56web
 
 # Stage 1
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /build
 COPY . .
 RUN dotnet publish Cards56Web.sln -c Release -o /webapp
@@ -19,7 +19,7 @@ RUN chmod -R 755 /webapp/scripts/*.sh
 COPY ./nginx/sites-available/56cards.net /webapp/56cards.net
 
 # Stage 2
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
 
 EXPOSE 80 443
 ENV TZ=America/Los_Angeles

@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/../Cards56Web/bin/Debug/netcoreapp3.1/Cards56Web.dll",
+            "program": "${workspaceFolder}/../Cards56Web/bin/Debug/net6.0/Cards56Web.dll",
             "args": [],
             "cwd": "${workspaceFolder}/../Cards56Web",
             "stopAtEntry": false,
