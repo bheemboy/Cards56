@@ -1,8 +1,8 @@
 # Use the following commands to build and push
-# docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:2022.03.21 .
+# docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:2022.04.15 .
 # docker push --all-tags bheemboy/cards56web
 
-# Stage 1
+# Stage 1 ##############################################################################
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /build
 COPY . .
@@ -18,14 +18,14 @@ RUN chmod -R 755 /webapp/scripts/*.sh
 # Copy nginx config file
 COPY ./nginx/sites-available/56cards.net /webapp/56cards.net
 
-# Stage 2
+# Stage 2 ##############################################################################
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
 
 EXPOSE 80 443
 ENV TZ=America/Los_Angeles
 ENV ASPNETCORE_URLS=http://+:5000
 
-RUN apt-get update; apt-get install -y nginx
+RUN apt-get update; apt-get install -y nginx curl
 
 WORKDIR /webapp
 COPY --from=build /webapp .
