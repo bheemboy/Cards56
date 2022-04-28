@@ -1,5 +1,5 @@
 # Use the following commands to build and push
-# docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:2022.04.15 .
+# docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:2022.04.22 .
 # docker push --all-tags bheemboy/cards56web
 
 # Stage 1 ##############################################################################
