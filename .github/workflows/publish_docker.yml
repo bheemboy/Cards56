@@ -1,0 +1,31 @@
+name: Build and publish on dockerhub
+
+on:
+  release:
+    types: [published]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # log into docker hub account
+      - name: docker login
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # get the date of the build
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y%m%d%M%S')"
+
+      # Build docker image
+      - name: Build the Docker image 
+        run: docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:${{ steps.date.outputs.date }}
+
+      # push The image to the docker hub
+      - name: Docker Push
+        run: docker push --all-tags bheemboy/cards56web
