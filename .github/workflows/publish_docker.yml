@@ -13,17 +13,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get previous tag
-        id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
-        with:
-          fallback: 1.0.0 # Optional fallback tag to use when no tag can be found
+      - name: Get latest release of NodeJS
+        uses: rez0n/actions-github-release@main
+        id: cards56_release
+        env:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: "bheemboy/cards56_release"
 
       - name: docker login
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build the Docker image 
-        run: docker build . -t bheemboy/cards56web:latest -t bheemboy/cards56web:${{ steps.previoustag.outputs.tag }}
+        run: docker build . -t bheemboy/cards56web:latest -t bheemboy/cards56web:${{ steps.cards56_release.outputs.release }}
 
       - name: Docker Push
         run: docker push --all-tags bheemboy/cards56web
