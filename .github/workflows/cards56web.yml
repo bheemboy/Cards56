@@ -16,4 +16,4 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: bheemboy/cards56web:latest, bheemboy/cards56web:${{ github.event.release.tag_name }}
+          tags: latest, ${{ github.event.release.tag_name }}
