@@ -24,7 +24,7 @@ jobs:
 
       # Build docker image
       - name: Build the Docker image 
-        run: docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:${{ steps.date.outputs.date }}
+        run: docker build . -t bheemboy/cards56web:latest -t bheemboy/cards56web:${{ steps.date.outputs.date }}
 
       # push The image to the docker hub
       - name: Docker Push
