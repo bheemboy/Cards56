@@ -13,19 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get latest release of NodeJS
-        uses: rez0n/actions-github-release@main
-        id: cards56_release
-        env:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: "bheemboy/cards56_release"
-          type: "stable"
-
+      # log into docker hub account
       - name: docker login
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build the Docker image 
-        run: docker build . -t bheemboy/cards56web:latest -t bheemboy/cards56web:${{ steps.cards56_release.outputs.release }}
+      # get the date of the build
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y%m%d%M%S')"
 
+      # Build docker image
+      - name: Build the Docker image 
+        run: docker build . -t bheemboy/cards56web:latest -t bheemboy/cards56web:${{ steps.date.outputs.date }}
+
+      # push The image to the docker hub
       - name: Docker Push
         run: docker push --all-tags bheemboy/cards56web
