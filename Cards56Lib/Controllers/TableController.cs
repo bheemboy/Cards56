@@ -635,49 +635,6 @@ namespace Cards56Lib
                 Game.Rounds.Add(new RoundInfo(CurrentRound.Winner));
             }
         }
-        private bool PlayerHasAllBiggerCards(int posn)
-        {
-            // System.Console.WriteLine($"Checking if player {posn} gets all future rounds...");
-            for (int i = 1; i < T.MaxPlayers; i++)
-            {
-                // If thani, skip player from same team
-                if (!IsThani || !T.SameTeam(posn, posn+i))
-                {
-                    // Check if PlayerAt(posn+i) has trump cards
-                    if (!IsThani && !CardsAt(T.PlayerAt(posn+i)).TrueForAll(card => card[0] != Game.TrumpCard[0])) return false;
-
-                    // Check if PlayerAt(posn+i) has bigger cards
-                    if (!CardsAt(posn).TrueForAll(NextPlayersCard =>
-                            CardsAt(T.PlayerAt(posn+i)).TrueForAll(card => 
-                            (NextPlayersCard[0] != card[0]) || (T.CompareRank(NextPlayersCard, card) <= 0)))) return false;
-                    // System.Console.WriteLine($"--player {T.PlayerAt(posn+i)} has all lower cards.");
-                }
-            }
-            return true;
-        }
-        private void AutoPlayNextRound(int posn)
-        {
-            string FirstCard = CardsAt(T.PlayerAt(posn)).First();
-            
-            // Add cards from other players
-            for (int i = 0; i < T.MaxPlayers; i++)
-            {
-                // If thani skip team members 
-                if (i==0 || !IsThani || !T.SameTeam(posn, posn+i))
-                {
-                    string card = CardsAt(T.PlayerAt(posn+i)).FirstOrDefault(c2 => c2[0]==FirstCard[0]);
-                    if (string.IsNullOrEmpty(card)) card = CardsAt(T.PlayerAt(posn+i)).First();
-
-                    CurrentRound.PlayedCards.Add(card);
-                    CurrentRound.TrumpExposed.Add(Game.TrumpExposed);
-
-                    // return played card to deck and remove the card from the player
-                    Deck.ReturnCard(card);
-                    CardsAt(T.PlayerAt(posn+i)).Remove(card);
-                }
-            }
-            // System.Console.WriteLine($"Auto played {string.Join(",",CurrentRound.PlayedCards)}.");
-        }
         private void ProcessGame()
         {
             // Is the game over?
@@ -761,6 +718,49 @@ namespace Cards56Lib
             Game.CoolieCount = new List<int>(){T.BaseCoolieCount,T.BaseCoolieCount};
             Game.KodiIrakkamRound[team] = true;
             Game.KodiIrakkamRound[(team+1)%2] = false;
+        }
+        private bool PlayerHasAllBiggerCards(int posn)
+        {
+            // System.Console.WriteLine($"Checking if player {posn} gets all future rounds...");
+            for (int i = 1; i < T.MaxPlayers; i++)
+            {
+                // If thani, skip player from same team
+                if (!IsThani || !T.SameTeam(posn, posn+i))
+                {
+                    // Check if PlayerAt(posn+i) has trump cards
+                    if (!IsThani && !CardsAt(T.PlayerAt(posn+i)).TrueForAll(card => card[0] != Game.TrumpCard[0])) return false;
+
+                    // Check if PlayerAt(posn+i) has bigger cards
+                    if (!CardsAt(posn).TrueForAll(NextPlayersCard =>
+                            CardsAt(T.PlayerAt(posn+i)).TrueForAll(card => 
+                            (NextPlayersCard[0] != card[0]) || (T.CompareRank(NextPlayersCard, card) <= 0)))) return false;
+                    // System.Console.WriteLine($"--player {T.PlayerAt(posn+i)} has all lower cards.");
+                }
+            }
+            return true;
+        }
+        private void AutoPlayNextRound(int posn)
+        {
+            string FirstCard = CardsAt(T.PlayerAt(posn)).First();
+            
+            // Add cards from other players
+            for (int i = 0; i < T.MaxPlayers; i++)
+            {
+                // If thani skip team members 
+                if (i==0 || !IsThani || !T.SameTeam(posn, posn+i))
+                {
+                    string card = CardsAt(T.PlayerAt(posn+i)).FirstOrDefault(c2 => c2[0]==FirstCard[0]);
+                    if (string.IsNullOrEmpty(card)) card = CardsAt(T.PlayerAt(posn+i)).First();
+
+                    CurrentRound.PlayedCards.Add(card);
+                    CurrentRound.TrumpExposed.Add(Game.TrumpExposed);
+
+                    // return played card to deck and remove the card from the player
+                    Deck.ReturnCard(card);
+                    CardsAt(T.PlayerAt(posn+i)).Remove(card);
+                }
+            }
+            // System.Console.WriteLine($"Auto played {string.Join(",",CurrentRound.PlayedCards)}.");
         }
         private void PrintGameSummary()
         {
