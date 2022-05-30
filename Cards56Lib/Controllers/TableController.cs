@@ -10,8 +10,6 @@ namespace Cards56Lib
     public delegate void StateUpdatedDelegate(string PlayerID, string jsonState);
     public class TableController
     {
-        private readonly object _tableLock = new object();
-
         public GameTable Game {get;}
         private StateUpdatedDelegate StateUpdated;
 
@@ -43,7 +41,7 @@ namespace Cards56Lib
         {
             get
             {
-                lock (_tableLock)
+                lock (Game)
                 {
                     List<Player> players = new List<Player>();
                     Game.Chairs.ForEach(c => {if (c.Occupant!=null) players.Add(c.Occupant);});
@@ -53,7 +51,7 @@ namespace Cards56Lib
         }
         public int JoinTable(Player player)
         {
-            lock (_tableLock)
+            lock (Game)
             {
                 if (!String.IsNullOrEmpty(player.TableName)) throw new PlayerAlreadyOnTableException();
                 if (!player.WatchOnly && TableFull) throw new TableIsFullException();
@@ -133,7 +131,7 @@ namespace Cards56Lib
 
         public void LeaveTable(Player player)
         {
-            lock (_tableLock)
+            lock (Game)
             {
                 if (player.TableName != TableName)
                 {
@@ -159,7 +157,7 @@ namespace Cards56Lib
 
         public void StartNextGame(int dealerPos)
         {
-            lock (_tableLock)
+            lock (Game)
             {
                 if (!TableFull) throw new NotEnoughPlayersOnTableException();
                 if (Game.Stage > GameStage.WaitingForPlayers && Game.Stage < GameStage.GameOver) throw new GameNotOverException();
@@ -179,7 +177,7 @@ namespace Cards56Lib
         }
         public void PlaceBid(Player player, int bid)
         {
-            lock (_tableLock)
+            lock (Game)
             {
                 if (Game.Stage < GameStage.Bidding) throw new BiddingNotStartedException();
                 if (Game.Stage > GameStage.Bidding) throw new BiddingOverException();
@@ -230,7 +228,7 @@ namespace Cards56Lib
 
         public void PassBid(Player player)
         {
-            lock (_tableLock)
+            lock (Game)
             {
                 try
                 {
@@ -325,7 +323,7 @@ namespace Cards56Lib
         }
         public void SelectTrump(Player player, string card)
         {
-            lock (_tableLock)
+            lock (Game)
             {
                 try
                 {
@@ -368,7 +366,7 @@ namespace Cards56Lib
         }
         public void ShowTrump(Player player)
         {
-            lock (_tableLock)
+            lock (Game)
             {
                 if (IsThani) throw new ThaniGameException();
                 if (Game.Stage < GameStage.PlayingCards) throw new CardPlayNotStartedException();
@@ -488,7 +486,7 @@ namespace Cards56Lib
         }
         public void PlayCard(Player player, string card, int cardroundOverDelay)
         {
-            lock (_tableLock)
+            lock (Game)
             {
                 if (CanPlayCard(player, card))
                 {
@@ -511,7 +509,7 @@ namespace Cards56Lib
         }
         public void ForfeitGame(Player player)
         {
-            lock (_tableLock)
+            lock (Game)
             {
                 if (player.WatchOnly) throw new WatcherCannotForfeitException();
                 if (Game.Stage < GameStage.PlayingCards) throw new GameNotStartedException();
