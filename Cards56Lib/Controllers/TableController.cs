@@ -500,61 +500,11 @@ namespace Cards56Lib
                     Deck.ReturnCard(card);
                     CardsAt(player.Position).Remove(card);
 
-                    Game.RoundOver = CurrentRoundAllCardsPlayed; 
+                    ProcessRound(cardroundOverDelay);
 
-                    if (Game.RoundOver)
-                    {
-                        CurrentRound.NextPlayer = -1;
-                        if (cardroundOverDelay > 0)
-                        {
-                            SendStateUpdatedEvents();
-                            System.Threading.Thread.Sleep(cardroundOverDelay);
-                        }
+                    ProcessGame();
 
-                        ProcessAndAddNewRound();
-
-                        if (!IsThani) // Autoplay works for thani also, but do not enable it - because it is more fun to play it out. 
-                        {
-                            // Check if no one else has trump cards and the next player has all bigcards
-                            if (Game.Stage!=GameStage.GameOver && (IsThani || Game.TrumpExposed) && PlayerHasAllBiggerCards(CurrentRound.NextPlayer))
-                            {
-                                // System.Console.WriteLine($"Player {CurrentRound.NextPlayer} get all next rounds!!!");
-                                while (Game.Stage!=GameStage.GameOver)
-                                {
-                                    AutoPlayNextRound(CurrentRound.NextPlayer);
-                                    ProcessAndAddNewRound();
-                                }
-                                AutoPlayedToCompletion = true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        CurrentRound.NextPlayer = T.PlayerAt((CurrentRound.NextPlayer+1));
-                        if (IsThani && (T.SameTeam(CurrentRound.NextPlayer, CurrentRound.FirstPlayer))) // Skip teammate
-                        {
-                            CurrentRound.NextPlayer = T.PlayerAt((CurrentRound.NextPlayer+1));
-                        }
-                    }
-
-                    // Check if nextplayer's card can be autoplayed
-                    if (Game.Stage!=GameStage.GameOver)
-                    {
-                        // If there is only one card to play
-                        if (CardsAt(CurrentRound.NextPlayer).Count == 1)
-                        {
-                            CurrentRound.AutoPlayNextCard = CardsAt(CurrentRound.NextPlayer).First();
-                        }
-                        else
-                        {
-                            // check if nextplayer has one and only one card of the current round suit
-                            var CurrentRoundSuitMatchingCards = CardsAt(CurrentRound.NextPlayer).Where(x => x.StartsWith(CurrentRoundSuit.ToString()));
-                            if (CurrentRoundSuitMatchingCards.Count() == 1)
-                            {
-                                CurrentRound.AutoPlayNextCard = CurrentRoundSuitMatchingCards.First();
-                            }
-                        }
-                    }
+                    AutoPlayWhenPosible();
                 }
                 SendStateUpdatedEvents();
             }
@@ -571,20 +521,51 @@ namespace Cards56Lib
                 Game.TeamScore[T.TeamOf(player.Position)] = 0; 
                 Game.TeamScore[T.TeamOf(player.Position+1)] = IsThani? 8: 56; 
 
+                // Set the Forfeited flag 
                 Game.GameForfeited = true;
 
-                // Update coolies and kodis
                 ProcessGame();
 
                 SendStateUpdatedEvents();
             }
         }
-        private void ProcessAndAddNewRound()
+        private void ProcessRound(int cardroundOverDelay)
         {
-            // Find the winner and the score for the round
+            Game.RoundOver = CurrentRoundAllCardsPlayed; 
+            
+            if (Game.RoundOver)
+            {
+                // CurrentRound.NextPlayer = -1;
+                SetRoundWinnerAndScore();
+
+                if (cardroundOverDelay > 0)
+                {
+                    SendStateUpdatedEvents();
+                    System.Threading.Thread.Sleep(cardroundOverDelay);
+                }
+
+                if (Game.Rounds.Count() < 8)
+                {
+                    // prepare next round
+                    Game.Rounds.Add(new RoundInfo(CurrentRound.Winner));
+                }
+            }
+            else
+            {
+                CurrentRound.NextPlayer = T.PlayerAt((CurrentRound.NextPlayer+1));
+                if (IsThani && (T.SameTeam(CurrentRound.NextPlayer, CurrentRound.FirstPlayer))) // Skip teammate
+                {
+                    CurrentRound.NextPlayer = T.PlayerAt((CurrentRound.NextPlayer+1));
+                }
+
+                SetAutoPlayNextCard();
+            }
+        }
+        private void SetRoundWinnerAndScore()
+        {
+            // Set the Round winner
             int winner = 0;
             string winnerCard = CurrentRound.PlayedCards[winner];
-            CurrentRound.Score = T.PointsForCard(winnerCard);
 
             for(int i = 1; i < CurrentRound.PlayedCards.Count; i++)
             {
@@ -600,39 +581,58 @@ namespace Cards56Lib
                     }
                 }
                 // playerCard is the first trumpCard in this round, change the winner
-                else if (!IsThani && 
-                        CurrentRound.TrumpExposed[i] && 
-                        (CurrentRound.PlayedCards[i].StartsWith(Game.TrumpCard[0].ToString())))
+                else if (!IsThani)
                 {
-                    winner = i;
-                    winnerCard = playerCard;
-                }
-
-                CurrentRound.Score += IsThani?0:T.PointsForCard(CurrentRound.PlayedCards[i]);
+                    if (CurrentRound.TrumpExposed[i] && 
+                        (CurrentRound.PlayedCards[i].StartsWith(Game.TrumpCard[0].ToString())))
+                    {
+                        winner = i;
+                        winnerCard = playerCard;
+                    }
+                } 
             }
-
             if (IsThani)
             {
-                CurrentRound.Score = 1;  // Give one point for each game
                 if (winner != 0) // Winner is someone from the other team
                 {
                     winner = winner*2-1; // get the player's actual player position from the play order  
                 }
             }
-
-            // Set the winner and next player
             CurrentRound.Winner = T.PlayerAt((winner + CurrentRound.FirstPlayer));
             Game.RoundWinner = CurrentRound.Winner;
-            
+
+            // Set the Round Score
+            if (IsThani)
+            {
+                CurrentRound.Score = 1;  // One point for each round
+            }
+            else
+            {
+                CurrentRound.Score = 0;
+                for(int i = 0; i < CurrentRound.PlayedCards.Count; i++)
+                {
+                    CurrentRound.Score += T.PointsForCard(CurrentRound.PlayedCards[i]);
+                }
+            }
             // Update team scores
             Game.TeamScore[CurrentRoundWinningTeam] += CurrentRound.Score;
-            
-            ProcessGame();
-            
-            if (Game.Stage!=GameStage.GameOver)
+        }
+        private void SetAutoPlayNextCard()
+        {
+            // Check if nextplayer's card can be autoplayed
+            // If there is only one card to play
+            if (CardsAt(CurrentRound.NextPlayer).Count == 1)
             {
-                // prepare next round
-                Game.Rounds.Add(new RoundInfo(CurrentRound.Winner));
+                CurrentRound.AutoPlayNextCard = CardsAt(CurrentRound.NextPlayer).First();
+            }
+            else
+            {
+                // check if nextplayer has one and only one card of the current round suit
+                var CurrentRoundSuitMatchingCards = CardsAt(CurrentRound.NextPlayer).Where(x => x.StartsWith(CurrentRoundSuit.ToString()));
+                if (CurrentRoundSuitMatchingCards.Count() == 1)
+                {
+                    CurrentRound.AutoPlayNextCard = CurrentRoundSuitMatchingCards.First();
+                }
             }
         }
         private void ProcessGame()
@@ -641,7 +641,7 @@ namespace Cards56Lib
             bool gameOver = false;
             if (IsThani)
             {
-                gameOver = (Game.RoundWinner != Game.Bid.HighBidder) || TeamScoreOf(Game.Bid.HighBidder) >= 8;
+                gameOver = (TeamScoreOf(Game.Bid.HighBidder) >= 8) || (TeamScoreOf(Game.Bid.HighBidder+1) >= 1);
             }
             else
             {
@@ -679,17 +679,21 @@ namespace Cards56Lib
                 }
 
                 // Remove Kodis for the entire team if it is a KodiIrakkamRound, or just for bidder  
-                if (bidderWon && Game.KodiIrakkamRound[T.TeamOf(Game.Bid.HighBidder)]) 
+                if (bidderWon) 
                 {
-                    for (int i = 0; i < T.PlayersPerTeam; i++)
+                    if (Game.KodiIrakkamRound[T.TeamOf(Game.Bid.HighBidder)])
                     {
-                        RemoveKodi(T.PlayerAt((Game.Bid.HighBidder+i*2)));
+                        for (int i = 0; i < T.PlayersPerTeam; i++)
+                        {
+                            RemoveKodi(T.PlayerAt((Game.Bid.HighBidder+i*2)));
+                        }
+                    }
+                    else
+                    {
+                        RemoveKodi(Game.Bid.HighBidder);
                     }
                 }
-                else
-                {
-                    RemoveKodi(Game.Bid.HighBidder);
-                }
+                
                 // reset KodiIrakkamRound 
                 Game.KodiIrakkamRound = new List<bool>(){false, false};
 
@@ -702,7 +706,7 @@ namespace Cards56Lib
 
                 // Print summary
                 PrintGameSummary();
-            } 
+            }
         }
         private void RemoveKodi(int player)
         {
@@ -718,6 +722,27 @@ namespace Cards56Lib
             Game.CoolieCount = new List<int>(){T.BaseCoolieCount,T.BaseCoolieCount};
             Game.KodiIrakkamRound[team] = true;
             Game.KodiIrakkamRound[(team+1)%2] = false;
+        }
+        private void AutoPlayWhenPosible()
+        {
+            if (!IsThani) // Autoplay works for thani also, but do not enable it - because it is more fun to play it out. 
+            {
+                if (CurrentRound.PlayedCards.Count == 0) // this is a new round
+                {
+                    // Check if no one else has trump cards and the next player has all bigcards
+                    if (Game.Stage!=GameStage.GameOver && (IsThani || Game.TrumpExposed) && PlayerHasAllBiggerCards(CurrentRound.NextPlayer))
+                    {
+                        // System.Console.WriteLine($"Player {CurrentRound.NextPlayer} get all next rounds!!!");
+                        while (Game.Stage!=GameStage.GameOver)
+                        {
+                            AutoPlayNextRound(CurrentRound.NextPlayer);
+                            ProcessRound(0);
+                            ProcessGame();
+                        }
+                        AutoPlayedToCompletion = true;
+                    }
+                }
+            }
         }
         private bool PlayerHasAllBiggerCards(int posn)
         {
