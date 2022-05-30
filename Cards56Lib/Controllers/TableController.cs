@@ -567,14 +567,14 @@ namespace Cards56Lib
                 if (Game.Stage < GameStage.PlayingCards) throw new GameNotStartedException();
                 if (Game.Stage > GameStage.PlayingCards) throw new GameIsOverException();
                 
-                Game.GameForfeited = true;
-                Game.Stage = GameStage.GameOver;
+                // Give opposite team all points
+                Game.TeamScore[T.TeamOf(player.Position)] = 0; 
+                Game.TeamScore[T.TeamOf(player.Position+1)] = IsThani? 8: 56; 
 
-                // Give opposite team all remaining points
-                Game.TeamScore[T.TeamOf(player.Position+1)] = T.MaxBid - TeamScoreOf(player.Position); 
+                Game.GameForfeited = true;
 
                 // Update coolies and kodis
-                UpdateCooliesAndKodies();
+                ProcessGame();
 
                 SendStateUpdatedEvents();
             }
@@ -627,30 +627,9 @@ namespace Cards56Lib
             // Update team scores
             Game.TeamScore[CurrentRoundWinningTeam] += CurrentRound.Score;
             
-            // determine if game is over
-            if (IsThani)
-            {
-                if (Game.RoundWinner != Game.Bid.HighBidder || TeamScoreOf(Game.Bid.HighBidder) >= 8)
-                {
-                    Game.Stage = GameStage.GameOver;
-                    Game.WinningTeam = (TeamScoreOf(Game.Bid.HighBidder) >= 8) ? T.TeamOf(Game.Bid.HighBidder) : T.TeamOf(Game.Bid.HighBidder+1);
-                }
-            }
-            else
-            {
-                if (TeamScoreOf(Game.Bid.HighBidder) >= Game.Bid.HighBid || TeamScoreOf(Game.Bid.HighBidder+1) > (56-Game.Bid.HighBid))
-                {
-                    Game.Stage = GameStage.GameOver;
-                    Game.WinningTeam = (TeamScoreOf(Game.Bid.HighBidder) >= Game.Bid.HighBid) ? T.TeamOf(Game.Bid.HighBidder) : T.TeamOf(Game.Bid.HighBidder+1);
-                }    
-            }
+            ProcessGame();
             
-            if (Game.Stage==GameStage.GameOver)
-            {
-                // Update coolies and kodis
-                UpdateCooliesAndKodies();
-            }
-            else
+            if (Game.Stage!=GameStage.GameOver)
             {
                 // prepare next round
                 Game.Rounds.Add(new RoundInfo(CurrentRound.Winner));
@@ -699,16 +678,51 @@ namespace Cards56Lib
             }
             // System.Console.WriteLine($"Auto played {string.Join(",",CurrentRound.PlayedCards)}.");
         }
-        private void UpdateCooliesAndKodies()
+        private void ProcessGame()
         {
-            // If bidding team won
-            if (TeamScoreOf(Game.Bid.HighBidder) >= (IsThani? 8 : Game.Bid.HighBid))
+            // Is the game over?
+            bool gameOver = false;
+            if (IsThani)
             {
-                Game.WinningTeam = T.TeamOf(Game.Bid.HighBidder);
-                Game.WinningScore = T.GetWinPointsForBid(Game.Bid.HighBid);
-                Game.CoolieCount[T.TeamOf(Game.Bid.HighBidder)] += T.GetWinPointsForBid(Game.Bid.HighBid);
-                Game.CoolieCount[T.TeamOf(Game.Bid.HighBidder+1)] -= T.GetWinPointsForBid(Game.Bid.HighBid);
-                if (Game.KodiIrakkamRound[T.TeamOf(Game.Bid.HighBidder)]) 
+                gameOver = (Game.RoundWinner != Game.Bid.HighBidder) || TeamScoreOf(Game.Bid.HighBidder) >= 8;
+            }
+            else
+            {
+                gameOver = TeamScoreOf(Game.Bid.HighBidder) >= Game.Bid.HighBid || TeamScoreOf(Game.Bid.HighBidder+1) > (56-Game.Bid.HighBid);
+            }
+
+            if (gameOver)
+            {
+                //Update game stage
+                Game.Stage = GameStage.GameOver;
+
+                // determine the winning team 
+                if (IsThani)
+                {
+                    Game.WinningTeam = (TeamScoreOf(Game.Bid.HighBidder) >= 8) ? T.TeamOf(Game.Bid.HighBidder) : T.TeamOf(Game.Bid.HighBidder+1);
+                }
+                else
+                {
+                    Game.WinningTeam = (TeamScoreOf(Game.Bid.HighBidder) >= Game.Bid.HighBid) ? T.TeamOf(Game.Bid.HighBidder) : T.TeamOf(Game.Bid.HighBidder+1);
+                }
+
+                // Update CoolieCount
+                bool bidderWon = T.TeamOf(Game.Bid.HighBidder) == Game.WinningTeam;
+                if (bidderWon)
+                {
+                    Game.WinningScore = T.GetWinPointsForBid(Game.Bid.HighBid);
+                    Game.CoolieCount[T.TeamOf(Game.Bid.HighBidder)] += Game.WinningScore;
+                    Game.CoolieCount[T.TeamOf(Game.Bid.HighBidder+1)] -= Game.WinningScore;
+                }
+                else
+                {
+                    Game.WinningScore = T.GetLosePointsForBid(Game.Bid.HighBid);
+                    Game.CoolieCount[T.TeamOf(Game.Bid.HighBidder)] -= Game.WinningScore;
+                    Game.CoolieCount[T.TeamOf(Game.Bid.HighBidder+1)] += Game.WinningScore;
+                }
+
+                // Remove Kodis for the entire team if it is a KodiIrakkamRound, or just for bidder  
+                if (bidderWon && Game.KodiIrakkamRound[T.TeamOf(Game.Bid.HighBidder)]) 
                 {
                     for (int i = 0; i < T.PlayersPerTeam; i++)
                     {
@@ -719,24 +733,19 @@ namespace Cards56Lib
                 {
                     RemoveKodi(Game.Bid.HighBidder);
                 }
-            }
-            else
-            {
-                Game.WinningTeam = T.TeamOf(Game.Bid.HighBidder+1);
-                Game.WinningScore = T.GetLosePointsForBid(Game.Bid.HighBid);
-                Game.CoolieCount[T.TeamOf(Game.Bid.HighBidder)] -= T.GetLosePointsForBid(Game.Bid.HighBid);
-                Game.CoolieCount[T.TeamOf(Game.Bid.HighBidder+1)] += T.GetLosePointsForBid(Game.Bid.HighBid);
-            }
-            Game.KodiIrakkamRound = new List<bool>(){false, false};
+                // reset KodiIrakkamRound 
+                Game.KodiIrakkamRound = new List<bool>(){false, false};
 
-            for (int i=0; i<Game.CoolieCount.Count; i++)
-                if (Game.CoolieCount[i]<=0) InstallKodi(i);
+                // Install kodis for team with no coolies
+                for (int i=0; i<Game.CoolieCount.Count; i++)
+                    if (Game.CoolieCount[i]<=0) InstallKodi(i);
 
-            // return all player cards and trump card to deck
-            ReturnCardsToDeck();
+                // return all player cards and trump card to deck
+                ReturnCardsToDeck();
 
-            // Print summary
-            PrintGameSummary();
+                // Print summary
+                PrintGameSummary();
+            } 
         }
         private void RemoveKodi(int player)
         {
