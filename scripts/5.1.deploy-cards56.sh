@@ -69,8 +69,7 @@ fi
 
 # run the container
 cd ${cards56webdir}
-sed -r -i 's/CARDS56WEB_TAG=.*/CARDS56WEB_TAG=$tag/g' .env
-exit 1
+sed -r -i "s/CARDS56WEB_TAG=.*/CARDS56WEB_TAG=$tag/g" .env
 docker-compose up -d
 cd -
 
