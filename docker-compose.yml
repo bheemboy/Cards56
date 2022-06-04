@@ -1,7 +1,7 @@
 version: "3"
 services:
     web:
-        image: bheemboy/cards56web
+        image: bheemboy/cards56web:${CARDS56WEB_TAG}
         container_name: cards56web
         restart: unless-stopped
         dns:
