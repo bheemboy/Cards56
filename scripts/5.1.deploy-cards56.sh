@@ -1,17 +1,41 @@
 #!/bin/bash
+function usage {
+        echo "Usage: $(basename $0) [-s] [-t TAG]" 2>&1
+        echo 'Deploy card56 docker image.'
+        echo '   -s          Use letsencrypt staging server. Production server is used by default'
+        echo '   -t TAG      Specify a specific tag to deploy. 'latest' is used by default'
+        exit 1
+}
+
 if [ "$(whoami)" != "rehman" ]; then
         echo "Script must be run as user: rehman"
-        exit 255
+        exit 1
 fi
-server=""
-if [ "$1" == "production" ]; then
-    server="https://acme-v02.api.letsencrypt.org/directory"
-elif [ "$1" == "staging" ]; then
-    server="https://acme-staging-v02.api.letsencrypt.org/directory"
-else
-    echo "run script with parameter 'staging' or 'production'"
-    exit 255
-fi
+
+server="https://acme-v02.api.letsencrypt.org/directory"
+tag="latest"
+
+# Define list of arguments expected in the input
+optstring=":st:"
+
+while getopts ${optstring} arg; do
+  case ${arg} in
+    s)
+      server="https://acme-staging-v02.api.letsencrypt.org/directory"
+      ;;
+    t)
+      tag="${OPTARG}"
+      ;;
+    ?)
+      echo "Invalid option: -${OPTARG}."
+      echo
+      usage
+      ;;
+  esac
+done
+
+echo "server : $server"
+echo "tag   : $tag"
 
 dockerdir="/home/rehman/docker"
 cards56webdir="${dockerdir}/cards56web"
@@ -26,7 +50,7 @@ mkdir -p ${ssldir}/acme-challenge
 docker stop cards56web
 docker rm -f cards56web
 # get latest version of cards56web
-docker pull bheemboy/cards56web
+docker pull bheemboy/cards56web:${tag}
 # remove any dangling images
 docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 
@@ -45,6 +69,8 @@ fi
 
 # run the container
 cd ${cards56webdir}
+sed -r -i 's/CARDS56WEB_TAG=.*/CARDS56WEB_TAG=$tag/g' .env
+exit 1
 docker-compose up -d
 cd -
 
