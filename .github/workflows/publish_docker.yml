@@ -20,7 +20,7 @@ jobs:
       # get the date of the build
       - name: Get current date
         id: date
-        run: echo "::set-output name=date::$(date +'%Y%m%d%M%S')"
+        run: echo "::set-output name=date::$(date +'%Y%m%d.%H%M%S')"
 
       # Build docker image
       - name: Build the Docker image 
