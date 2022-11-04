@@ -534,13 +534,13 @@ namespace Cards56Lib
             if (Game.RoundOver)
             {
                 // CurrentRound.NextPlayer = -1;
-                SetRoundWinnerAndScore();
-
                 if (cardroundOverDelay > 0)
                 {
                     SendStateUpdatedEvents();
                     System.Threading.Thread.Sleep(cardroundOverDelay);
                 }
+
+                SetRoundWinnerAndScore();
 
                 if (Game.Rounds.Count() < 8)
                 {
