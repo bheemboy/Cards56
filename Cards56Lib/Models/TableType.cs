@@ -7,7 +7,7 @@ namespace Cards56Lib
     public class TableType
     {
         public int Type {get;}
-        private int[] _BaseCoolieCount = new int[] {5,6,7};
+        private int[] _BaseCoolieCount = new int[] {6,6,7};
         public int BaseCoolieCount => _BaseCoolieCount[Type]; 
         private int[] _MaxPlayers = new int[] {4,6,8};
         public int MaxPlayers => _MaxPlayers[Type];
