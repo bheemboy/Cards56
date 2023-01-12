@@ -1,7 +1,6 @@
 #!/bin/bash
 
-dockerdir="/home/rehman/docker"
-ssldir="${dockerdir}/ssl"
+ssldir="/opt/ssl"
 letsencryptdir="${ssldir}/letsencrypt"
 livecertdir="${letsencryptdir}/config/live/56cards.net"
 

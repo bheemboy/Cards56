@@ -1,4 +1,21 @@
 #!/bin/bash
+
+# Pre-install
+# sudo snap install --classic certbot
+# sudo ln -s /snap/bin/certbot /usr/bin/certbot
+#
+# sudo snap install docker
+# sudo groupadd docker
+# sudo usermod -aG docker ubuntu
+#
+# rm ~/5.1.deploy-cards56.sh; wget --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.1.deploy-cards56.sh
+#
+# INSTALL CRON
+# @reboot sleep 30 && wget -qO- https://EkpvAgJg6AYiWMCr:hN5oGmmM9VDcCQ9g@domains.google.com/nic/update?hostname=56cards.net &> /dev/null
+# 0 0 * * * wget -qO- https://EkpvAgJg6AYiWMCr:hN5oGmmM9VDcCQ9g@domains.google.com/nic/update?hostname=56cards.net &> /dev/null
+# 0 6 * * thu /opt/cards56web/5.2.renew-56cards.net-cert.sh
+#
+#
 function usage {
         echo "Usage: $(basename $0) [-s] [-t TAG]" 2>&1
         echo 'Deploy card56 docker image.'
@@ -7,8 +24,8 @@ function usage {
         exit 1
 }
 
-if [ "$(whoami)" != "rehman" ]; then
-        echo "Script must be run as user: rehman"
+if [ "$(id -u)" != 1000 ]; then
+        echo "Script must be run as a user"
         exit 1
 fi
 
@@ -37,13 +54,19 @@ done
 echo "server : $server"
 echo "tag   : $tag"
 
-dockerdir="/home/rehman/docker"
-cards56webdir="${dockerdir}/cards56web"
-ssldir="${dockerdir}/ssl"
+cards56webdir="/opt/cards56web"
+if [ ! -d "${cards56webdir}" ]; then
+  sudo mkdir -p ${cards56webdir}; sudo chown 1000 ${cards56webdir}
+fi
+
+ssldir="/opt/ssl"
+if [ ! -d "${ssldir}" ]; then
+  sudo mkdir -p ${ssldir}; sudo chown 1000 ${ssldir}
+fi
+
 letsencryptdir="${ssldir}/letsencrypt"
 livecertdir="${letsencryptdir}/config/live/56cards.net"
 
-mkdir -p ${cards56webdir}
 mkdir -p ${ssldir}/acme-challenge
 
 # stop and remove any running instances of cards56web
@@ -55,6 +78,7 @@ docker pull bheemboy/cards56web:${tag}
 docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 
 # re-download files
+rm ${cards56webdir}/5.2.renew-56cards.net-cert.sh; wget -P ${cards56webdir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.2.renew-56cards.net-cert.sh
 rm ${cards56webdir}/.env; wget -P ${cards56webdir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/.env
 rm ${cards56webdir}/docker-compose.yml; wget -P ${cards56webdir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/docker-compose.yml
 rm ${ssldir}/acme-auth.sh ; wget -P ${ssldir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-auth.sh
