@@ -8,12 +8,15 @@
 # sudo groupadd docker
 # sudo usermod -aG docker ubuntu
 #
-# rm ~/5.1.deploy-cards56.sh; wget --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.1.deploy-cards56.sh
+# rm /home/ubuntu/5.1.deploy-cards56.sh; wget --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.1.deploy-cards56.sh
+# chmod +x /home/ubuntu/5.1.deploy-cards56.sh
+# rm /home/ubuntu/5.2.renew-56cards.net-cert.sh; wget --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.2.renew-56cards.net-cert.sh
+# chmod +x /home/ubuntu/5.2.renew-56cards.net-cert.sh
 #
 # INSTALL CRON
 # @reboot sleep 30 && wget -qO- https://EkpvAgJg6AYiWMCr:hN5oGmmM9VDcCQ9g@domains.google.com/nic/update?hostname=56cards.net &> /dev/null
 # 0 0 * * * wget -qO- https://EkpvAgJg6AYiWMCr:hN5oGmmM9VDcCQ9g@domains.google.com/nic/update?hostname=56cards.net &> /dev/null
-# 0 6 * * thu /opt/cards56web/5.2.renew-56cards.net-cert.sh
+# 0 6 * * thu /home/ubuntu/5.2.renew-56cards.net-cert.sh
 #
 #
 function usage {
@@ -24,8 +27,8 @@ function usage {
         exit 1
 }
 
-if [ "$(id -u)" != 1000 ]; then
-        echo "Script must be run as a user"
+if [ "$(whoami)" != "ubuntu" ]; then
+        echo "Script must be run as user: ubuntu"
         exit 1
 fi
 
@@ -54,20 +57,14 @@ done
 echo "server : $server"
 echo "tag   : $tag"
 
-cards56webdir="/opt/cards56web"
-if [ ! -d "${cards56webdir}" ]; then
-  sudo mkdir -p ${cards56webdir}; sudo chown 1000 ${cards56webdir}
-fi
+cards56webdir="/home/ubuntu/cards56web"
+mkdir -p ${cards56webdir}
 
-ssldir="/opt/ssl"
-if [ ! -d "${ssldir}" ]; then
-  sudo mkdir -p ${ssldir}; sudo chown 1000 ${ssldir}
-fi
+ssldir="/home/ubuntu/ssl"
+mkdir -p ${ssldir}/acme-challenge
 
 letsencryptdir="${ssldir}/letsencrypt"
 livecertdir="${letsencryptdir}/config/live/56cards.net"
-
-mkdir -p ${ssldir}/acme-challenge
 
 # stop and remove any running instances of cards56web
 docker stop cards56web
@@ -78,9 +75,8 @@ docker pull bheemboy/cards56web:${tag}
 docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 
 # re-download files
-rm ${cards56webdir}/5.2.renew-56cards.net-cert.sh; wget -P ${cards56webdir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.2.renew-56cards.net-cert.sh
-rm ${cards56webdir}/.env; wget -P ${cards56webdir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/.env
 rm ${cards56webdir}/docker-compose.yml; wget -P ${cards56webdir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/docker-compose.yml
+rm ${cards56webdir}/.env; wget -P ${cards56webdir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/.env
 rm ${ssldir}/acme-auth.sh ; wget -P ${ssldir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-auth.sh
 rm ${ssldir}/acme-cleanup.sh ;wget -P ${ssldir} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/acme-cleanup.sh
 chmod +x ${ssldir}/acme-auth.sh
