@@ -1,2 +1,2 @@
 #!/bin/bash
-echo $CERTBOT_VALIDATION > /opt/ssl/acme-challenge/$CERTBOT_TOKEN
+echo $CERTBOT_VALIDATION > /home/ubuntu/ssl/acme-challenge/$CERTBOT_TOKEN
