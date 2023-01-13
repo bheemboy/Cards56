@@ -12,7 +12,7 @@ RUN dotnet publish Cards56Web.sln -c Release -o /webapp
 RUN mkdir -p /webapp/wwwroot/.well-known
 
 # Copy startup scripts
-COPY ./scripts /webapp/scripts
+COPY ./scripts/startup.sh /webapp/scripts/startup.sh
 RUN chmod -R 755 /webapp/scripts/*.sh
 
 # Copy nginx config file

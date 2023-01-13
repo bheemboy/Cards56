@@ -15,7 +15,7 @@ class Table
     this._init_koolies();
     this._init_scores();
     this._init_center_display();
-    this._init_version("2022.12.20");
+    this._init_version("2023.01.12");
     this._init_alert_message();
     this._init_table_buttons();
   }
