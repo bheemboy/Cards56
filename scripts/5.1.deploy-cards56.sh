@@ -14,8 +14,8 @@
 # chmod +x /home/ubuntu/5.2.renew-56cards.net-cert.sh
 #
 # INSTALL CRON
-# @reboot sleep 30 && wget -qO- https://EkpvAgJg6AYiWMCr:hN5oGmmM9VDcCQ9g@domains.google.com/nic/update?hostname=56cards.net &> /dev/null
-# 0 0 * * * wget -qO- https://EkpvAgJg6AYiWMCr:hN5oGmmM9VDcCQ9g@domains.google.com/nic/update?hostname=56cards.net &> /dev/null
+# @reboot sleep 30 && wget -qO- https://user:pwd@domains.google.com/nic/update?hostname=56cards.net &> /dev/null
+# 0 0 * * * wget -qO- https://user:pwdg@domains.google.com/nic/update?hostname=56cards.net &> /dev/null
 # 0 6 * * thu /home/ubuntu/5.2.renew-56cards.net-cert.sh
 #
 #
