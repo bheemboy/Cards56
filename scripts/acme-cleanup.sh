@@ -1,2 +1,2 @@
 #!/bin/bash
-rm -f /home/ubuntu/ssl/acme-challenge/$CERTBOT_TOKEN
+rm -f $HOME/ssl/acme-challenge/$CERTBOT_TOKEN
