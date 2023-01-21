@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ssldir="/home/ubuntu/ssl"
+ssldir="${HOME}/ssl"
 letsencryptdir="${ssldir}/letsencrypt"
 livecertdir="${letsencryptdir}/config/live/56cards.net"
 
@@ -16,4 +16,4 @@ if [ "${livecertdir}/fullchain.pem" -nt "${ssldir}/fullchain.pem" ]; then
 fi
 
 # cron-job
-# 0 6 * * thu /home/ubuntu/docker/5.2.renew-56cards.net-cert.sh
+# 0 6 * * thu $HOME/5.2.renew-56cards.net-cert.sh >$HOME/5.2.renew-56cards.net-cert.log 2>&1
