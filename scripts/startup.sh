@@ -3,6 +3,8 @@ echo "Email="$EMAIL
 echo "Certbot server="$CERTBOT_SERVER
 echo " Dynamic DNS URL="$DYN_DNS_URL
 
+curl $DYN_DNS_URL
+
 ssldir=/etc/nginx/ssl
 mkdir -p ${ssldir}
 
