@@ -1,2 +1,4 @@
 #!/bin/bash
-echo $CERTBOT_VALIDATION > $HOME/ssl/acme-challenge/$CERTBOT_TOKEN
+echo "creating.../webapp/wwwroot/.well-known/acme-challenge/"$CERTBOT_TOKEN
+echo $CERTBOT_VALIDATION > /webapp/wwwroot/.well-known/acme-challenge/$CERTBOT_TOKEN
+

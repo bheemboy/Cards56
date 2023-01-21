@@ -1,2 +1,3 @@
 #!/bin/bash
-rm -f $HOME/ssl/acme-challenge/$CERTBOT_TOKEN
+echo "deleting.../webapp/wwwroot/.well-known/acme-challenge/"$CERTBOT_TOKEN
+rm -f /webapp/wwwroot/.well-known/acme-challenge/$CERTBOT_TOKEN

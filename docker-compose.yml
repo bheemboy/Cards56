@@ -1,7 +1,7 @@
 version: "3"
 services:
     web:
-        image: bheemboy/cards56web:${CARDS56WEB_TAG}
+        image: bheemboy/cards56web
         container_name: cards56web
         restart: unless-stopped
         dns:
@@ -9,7 +9,7 @@ services:
         ports:
             - "80:80"
             - "443:443"
-        volumes:
-            - ${CERTIFICATE_PATH}:/etc/nginx/ssl
-            - ${ACMECHALLENGE_PATH}:/webapp/wwwroot/.well-known/acme-challenge
-
+        environment:
+            # - CERTBOT_SERVER=https://acme-staging-v02.api.letsencrypt.org/directory
+            - EMAIL=${MY_EMAIL}
+            - DYN_DNS_URL=https://${MY_DNS_USER}:${MY_DNS_PWD}@domains.google.com/nic/update?hostname=56cards.net

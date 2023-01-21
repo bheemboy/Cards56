@@ -12,7 +12,7 @@ RUN dotnet publish Cards56Web.sln -c Release -o /webapp
 RUN mkdir -p /webapp/wwwroot/.well-known
 
 # Copy startup scripts
-COPY ./scripts/startup.sh /webapp/scripts/startup.sh
+COPY ./scripts /webapp/scripts
 RUN chmod -R 755 /webapp/scripts/*.sh
 
 # Copy nginx config file
@@ -24,13 +24,18 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
 EXPOSE 80 443
 ENV TZ=America/Los_Angeles
 ENV ASPNETCORE_URLS=http://+:5000
+ENV EMAIL=administrator@56cards.net
+ENV CERTBOT_SERVER=https://acme-v02.api.letsencrypt.org/directory
+ENV DYN_DNS_URL=https://user:password@domains.google.com/nic/update?hostname=56cards.net
 
-RUN apt-get update; apt-get install -y nginx curl
+RUN apt-get update; apt-get install -y nginx curl certbot cron
 
 WORKDIR /webapp
 COPY --from=build /webapp .
 
 RUN ln -s /webapp/56cards.net /etc/nginx/sites-enabled/56cards.net; rm /etc/nginx/sites-enabled/default
+
+RUN crontab -l | { cat; echo "@reboot sleep 30 && curl \$DYN_DNS_URL\n0 0 * * * curl \$DYN_DNS_URL\n0 6 * * thu /webapp/scripts/renew-cert.sh\n"; } | crontab -
 
 CMD ["sh", "/webapp/scripts/startup.sh"]
 

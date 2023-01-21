@@ -1,6 +1,7 @@
 #!/bin/bash
 
-ssldir="${HOME}/ssl"
+echo "Renew SSL Certificate..."
+ssldir=/etc/nginx/ssl
 letsencryptdir="${ssldir}/letsencrypt"
 livecertdir="${letsencryptdir}/config/live/56cards.net"
 
@@ -12,8 +13,5 @@ livecertdir="${letsencryptdir}/config/live/56cards.net"
 if [ "${livecertdir}/fullchain.pem" -nt "${ssldir}/fullchain.pem" ]; then
     cp "${livecertdir}/fullchain.pem" "${ssldir}/fullchain.pem"
     cp "${livecertdir}/privkey.pem" "${ssldir}/privkey.pem"
-    docker exec -it cards56web service nginx reload
+    service nginx reload
 fi
-
-# cron-job
-# 0 6 * * thu $HOME/5.2.renew-56cards.net-cert.sh >$HOME/5.2.renew-56cards.net-cert.log 2>&1
