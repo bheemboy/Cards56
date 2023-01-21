@@ -17,7 +17,7 @@
 # INSTALL CRON
 # @reboot sleep 30 && wget -qO- https://user:pwd@domains.google.com/nic/update?hostname=56cards.net &> /dev/null
 # 0 0 * * * wget -qO- https://user:pwdg@domains.google.com/nic/update?hostname=56cards.net &> /dev/null
-# 0 6 * * thu $HOME/5.2.renew-56cards.net-cert.sh
+# 0 6 * * thu $HOME/5.2.renew-56cards.net-cert.sh >$HOME/5.2.renew-56cards.net-cert.log 2>&1
 #
 #
 function usage {
