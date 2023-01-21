@@ -6,17 +6,18 @@
 #
 # sudo snap install docker
 # sudo groupadd docker
-# sudo usermod -aG docker ubuntu
+# usrname=$(whoami)
+# sudo usermod -aG docker $usrname
 #
-# rm /home/ubuntu/5.1.deploy-cards56.sh; wget --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.1.deploy-cards56.sh
-# chmod +x /home/ubuntu/5.1.deploy-cards56.sh
-# rm /home/ubuntu/5.2.renew-56cards.net-cert.sh; wget --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.2.renew-56cards.net-cert.sh
-# chmod +x /home/ubuntu/5.2.renew-56cards.net-cert.sh
+# rm $HOME/5.1.deploy-cards56.sh; wget --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.1.deploy-cards56.sh
+# chmod +x $HOME/5.1.deploy-cards56.sh
+# rm $HOME/5.2.renew-56cards.net-cert.sh; wget --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.2.renew-56cards.net-cert.sh
+# chmod +x $HOME/5.2.renew-56cards.net-cert.sh
 #
 # INSTALL CRON
 # @reboot sleep 30 && wget -qO- https://user:pwd@domains.google.com/nic/update?hostname=56cards.net &> /dev/null
 # 0 0 * * * wget -qO- https://user:pwdg@domains.google.com/nic/update?hostname=56cards.net &> /dev/null
-# 0 6 * * thu /home/ubuntu/5.2.renew-56cards.net-cert.sh
+# 0 6 * * thu $HOME/5.2.renew-56cards.net-cert.sh
 #
 #
 function usage {
@@ -27,8 +28,8 @@ function usage {
         exit 1
 }
 
-if [ "$(whoami)" != "ubuntu" ]; then
-        echo "Script must be run as user: ubuntu"
+if [ "$(whoami)" == "root" ]; then
+        echo "Script must NOT be run as root"
         exit 1
 fi
 
@@ -57,10 +58,10 @@ done
 echo "server : $server"
 echo "tag   : $tag"
 
-cards56webdir="/home/ubuntu/cards56web"
+cards56webdir="${HOME}/cards56web"
 mkdir -p ${cards56webdir}
 
-ssldir="/home/ubuntu/ssl"
+ssldir="${HOME}/ssl"
 mkdir -p ${ssldir}/acme-challenge
 
 letsencryptdir="${ssldir}/letsencrypt"
