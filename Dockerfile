@@ -35,7 +35,7 @@ COPY --from=build /webapp .
 
 RUN ln -s /webapp/56cards.net /etc/nginx/sites-enabled/56cards.net; rm /etc/nginx/sites-enabled/default
 
-RUN crontab -l | { cat; echo "@reboot sleep 30 && curl \$DYN_DNS_URL\n0 0 * * * curl \$DYN_DNS_URL\n0 6 * * thu /webapp/scripts/renew-cert.sh\n"; } | crontab -
+RUN crontab -l | { cat; echo "0 0 * * * curl \$DYN_DNS_URL\n0 6 * * thu /webapp/scripts/renew-cert.sh\n"; } | crontab -
 
 CMD ["sh", "/webapp/scripts/startup.sh"]
 
