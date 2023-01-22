@@ -37,6 +37,6 @@ if [ "${livecertdir}/fullchain.pem" -nt "${ssldir}/fullchain.pem" ]; then
     service nginx reload
 fi
 
-service start cron
+service cron start
 
 dotnet /webapp/Cards56Web.dll
