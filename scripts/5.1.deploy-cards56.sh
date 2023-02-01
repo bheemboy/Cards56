@@ -6,12 +6,12 @@
 # usrname=$(whoami)
 # sudo usermod -aG docker $usrname
 #
-# wget ${HOME} --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.1.deploy-cards56.sh
+# wget -P ${HOME}/docker/ --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/scripts/5.1.deploy-cards56.sh
 # chmod +x $HOME/5.1.deploy-cards56.sh
-# mkdir -p ${HOME}/cards56web
-# wget -P ${HOME}/cards56web --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/docker-compose.yml
-# wget -P ${HOME}/cards56web --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/.env
-# nano ${HOME}/cards56web/.env
+# mkdir -p ${HOME}/docker/cards56web
+# wget -P ${HOME}/docker/cards56web --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/docker-compose.yml
+# wget -P ${HOME}/docker/cards56web --no-cache https://raw.githubusercontent.com/bheemboy/Cards56/master/.env
+# nano ${HOME}/docker/cards56web/.env
 #
 
 if [ "$(whoami)" == "root" ]; then
@@ -28,6 +28,6 @@ docker pull bheemboy/cards56web
 docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 
 # run the container
-cd ${HOME}/cards56web
+cd ${HOME}/docker/cards56web
 docker-compose up -d
 cd -
