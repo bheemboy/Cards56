@@ -42,7 +42,7 @@ namespace Cards56Web
                 .AllowAnyMethod()
                 .AllowCredentials());
             app.UseDefaultFiles();
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseStaticFiles();
             // app.UseStaticFiles(new StaticFileOptions    //For the '.well-known' folder
             //     {
