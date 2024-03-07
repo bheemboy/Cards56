@@ -29,6 +29,7 @@ ENV ASPNETCORE_URLS=http://+:80
 # ENV DYN_DNS_URL=https://user:password@domains.google.com/nic/update?hostname=56cards.net
 
 # RUN apt-get update; apt-get install -y nginx curl certbot cron
+RUN apt-get update; apt-get install -y curl
 
 WORKDIR /webapp
 COPY --from=build /webapp .
