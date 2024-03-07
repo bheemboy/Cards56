@@ -120,11 +120,6 @@ namespace Cards56Lib
             }
         }
         private Card56Exception() { }
-        private Card56Exception(string message) : base(message) { }
-        private Card56Exception(string message, System.Exception inner) : base(message, inner) { }
-        protected Card56Exception(
-            System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
         private static string AssemblyDirectory
         {
             get

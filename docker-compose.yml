@@ -8,10 +8,3 @@ services:
             - 1.1.1.1
         ports:
             - "80:80"
-            - "443:443"
-        environment:
-            # - CERTBOT_SERVER=https://acme-staging-v02.api.letsencrypt.org/directory
-            - EMAIL=${MY_EMAIL}
-            - DYN_DNS_URL=https://${MY_DNS_USER}:${MY_DNS_PWD}@domains.google.com/nic/update?hostname=56cards.net
-        volumes:
-            - ${SSLDIR}/:/etc/nginx/ssl

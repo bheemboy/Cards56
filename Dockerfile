@@ -1,9 +1,9 @@
 # Use the following commands to build and push
-# docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:2022.04.22 .
+# docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:2024.03.06 .
 # docker push --all-tags bheemboy/cards56web
 
 # Stage 1 ##############################################################################
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /build
 COPY . .
 RUN dotnet publish Cards56Web.sln -c Release -o /webapp
@@ -19,9 +19,9 @@ RUN dotnet publish Cards56Web.sln -c Release -o /webapp
 # COPY ./nginx/sites-available/56cards.net /webapp/56cards.net
 
 # Stage 2 ##############################################################################
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 
-EXPOSE 80 443
+EXPOSE 80
 ENV TZ=America/Los_Angeles
 ENV ASPNETCORE_URLS=http://+:80
 # ENV EMAIL=administrator@56cards.net
@@ -29,7 +29,6 @@ ENV ASPNETCORE_URLS=http://+:80
 # ENV DYN_DNS_URL=https://user:password@domains.google.com/nic/update?hostname=56cards.net
 
 # RUN apt-get update; apt-get install -y nginx curl certbot cron
-RUN apt-get update
 
 WORKDIR /webapp
 COPY --from=build /webapp .

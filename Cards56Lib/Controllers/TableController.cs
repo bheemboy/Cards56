@@ -290,7 +290,7 @@ namespace Cards56Lib
                     }
                     Game.Bid.BidHistory.Add(new BidPass(player.Position, 0));
                 }
-                catch (PassNotAllowedException e)
+                catch (PassNotAllowedException)
                 {
                     // Passbig is not allowed for first bidder in close trump games.
                     // But if the player has all zero points cards it is ok to pass bid.
@@ -312,7 +312,7 @@ namespace Cards56Lib
                     }
                     else
                     {
-                        throw e;
+                        throw;
                     }
                 }
                 finally
