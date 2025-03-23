@@ -34,7 +34,7 @@ namespace Cards56Lib
         }
         private void ShuffleCards()
         {
-            int ShuffleCount = 6;
+            int ShuffleCount = 15;
             if (Deck==null || Deck.Count != T.DeckSize)
             {
                 Deck = new List<string>();
