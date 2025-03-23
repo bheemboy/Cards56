@@ -56,11 +56,11 @@ namespace Cards56Lib
                 for (int i = 0; i < ShuffleCount; i++)
                 {
                     // Move cards from top to bottom
-                    shuffle(0, rnd.Next(T.DeckSize/4, T.DeckSize/2));
+                    shuffle(0, rnd.Next(T.DeckSize/4, T.DeckSize*3/4));
 
                     // Move cards from middle to bottom
-                    int start = rnd.Next(T.DeckSize/2);
-                    shuffle(start, rnd.Next(T.DeckSize/2, T.DeckSize) - start);
+                    int start = rnd.Next(T.DeckSize/4, T.DeckSize/2);
+                    shuffle(start, rnd.Next(T.DeckSize/2, T.DeckSize*3/4) - start);
                 }
                 if (IsValidShuffle()) break;
             }
