@@ -34,13 +34,13 @@ namespace Cards56Lib
         }
         private void ShuffleCards()
         {
-            int ShuffleCount = 3;
+            int ShuffleCount = 6;
             if (Deck==null || Deck.Count != T.DeckSize)
             {
                 Deck = new List<string>();
                 T.Suits.ForEach(s => T.Ranks.ForEach(r => Deck.Add(s+r)));
                 T.Suits.ForEach(s => T.Ranks.ForEach(r => Deck.Add(s+r)));
-                ShuffleCount += 3;
+                ShuffleCount *= 2;
             }
 
             Action<int, int> shuffle = (start, count) =>
