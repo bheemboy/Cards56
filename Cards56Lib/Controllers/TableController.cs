@@ -13,7 +13,7 @@ namespace Cards56Lib
         public GameTable Game {get;}
         private StateUpdatedDelegate StateUpdated;
 
-        private DeckController Deck;
+        private DeckController DeckCtl;
         public TableType T => Game.T;
         public bool IsThani => Game.Bid.HighBid == T.MaxBid;
         public string TableName => Game.TableName;
@@ -35,7 +35,7 @@ namespace Cards56Lib
         {
             Game = gameTable;
             StateUpdated = stateUpdated;
-            Deck = new DeckController(Game.T, Game.Deck);
+            DeckCtl = new DeckController(Game.T, Game.Deck);
         }
         public IReadOnlyList<Player> CurrentPlayers
         {
@@ -166,7 +166,7 @@ namespace Cards56Lib
                 Game.Stage = GameStage.Bidding;
 
                 // Deal cards
-                List<string>[] dealtCards = Deck.DealCards();
+                List<string>[] dealtCards = DeckCtl.DealCards();
                 for(int i=0; i<Game.Chairs.Count; i++)
                 {
                     Game.Chairs[i].Cards = dealtCards[i];
@@ -301,8 +301,8 @@ namespace Cards56Lib
                     if (totalPoints == 0)
                     {
                         // cancel the game
-                        Game.Chairs.ForEach(c => Deck.ReturnCards(c.Cards));
-                        if (!Game.TrumpExposed && Game.TrumpCard != "") Deck.ReturnCard(Game.TrumpCard);
+                        Game.Chairs.ForEach(c => DeckCtl.ReturnCards(c.Cards));
+                        if (!Game.TrumpExposed && Game.TrumpCard != "") DeckCtl.ReturnCard(Game.TrumpCard);
                         InitializeNextGame(Game.DealerPos);
                         Game.Stage = GameStage.GameOver;
                         Game.GameCancelled = true;
@@ -348,8 +348,8 @@ namespace Cards56Lib
                     else
                     {
                         // cancel the game
-                        Game.Chairs.ForEach(c => Deck.ReturnCards(c.Cards));
-                        if (!Game.TrumpExposed && Game.TrumpCard != "") Deck.ReturnCard(Game.TrumpCard);
+                        Game.Chairs.ForEach(c => DeckCtl.ReturnCards(c.Cards));
+                        if (!Game.TrumpExposed && Game.TrumpCard != "") DeckCtl.ReturnCard(Game.TrumpCard);
                         InitializeNextGame(Game.DealerPos);
                         Game.Stage = GameStage.GameOver;
                         Game.GameCancelled = true;
@@ -495,7 +495,7 @@ namespace Cards56Lib
                     CurrentRound.TrumpExposed.Add(Game.TrumpExposed);
 
                     // return played card to deck and remove the card from the player
-                    Deck.ReturnCard(card);
+                    DeckCtl.ReturnCard(card);
                     CardsAt(player.Position).Remove(card);
 
                     ProcessRound(cardroundOverDelay);
@@ -779,7 +779,7 @@ namespace Cards56Lib
                     CurrentRound.TrumpExposed.Add(Game.TrumpExposed);
 
                     // return played card to deck and remove the card from the player
-                    Deck.ReturnCard(card);
+                    DeckCtl.ReturnCard(card);
                     CardsAt(T.PlayerAt(posn+i)).Remove(card);
                 }
             }
@@ -794,8 +794,8 @@ namespace Cards56Lib
         private void ReturnCardsToDeck()
         {
             // return any remain cards players have
-            Game.Chairs.ForEach(c => Deck.ReturnCards(c.Cards));
-            if (!Game.TrumpExposed && Game.TrumpCard != "") Deck.ReturnCard(Game.TrumpCard);
+            Game.Chairs.ForEach(c => DeckCtl.ReturnCards(c.Cards));
+            if (!Game.TrumpExposed && Game.TrumpCard != "") DeckCtl.ReturnCard(Game.TrumpCard);
         }
     }
 }
