@@ -1,6 +1,6 @@
 services:
   web:
-    image: bheemboy/cards56web:2025.03.23
+    image: bheemboy/cards56web:latest-arm64
     container_name: cards56web
     # Port mapping removed since external access is not needed
     restart: unless-stopped    
