@@ -32,61 +32,15 @@ namespace Cards56Lib
                 return withdrawCards;
             }
         }
-        private void GetNewShuffledDeck()
-        {
-            Deck = new List<string>();
-            T.Suits.ForEach(s => T.Ranks.ForEach(r => Deck.Add(s+r)));
-            T.Suits.ForEach(s => T.Ranks.ForEach(r => Deck.Add(s+r)));
-
-            Random rnd = new Random();
-            int shuffleRepeat = 3; // Most people shuffle 3-4 times
-
-            for (int shuffle = 0; shuffle < shuffleRepeat; shuffle++)
-            {
-                // Cut the deck roughly in half (with some variation)
-                int cutPoint = (T.DeckSize / 2) + rnd.Next(-4, 5);
-                var leftHalf = Deck.GetRange(0, cutPoint);
-                var rightHalf = Deck.GetRange(cutPoint, T.DeckSize - cutPoint);
-                
-                List<string> shuffledDeck = new List<string>();
-                int leftIdx = 0, rightIdx = 0;
-
-                // Riffle shuffle - interleave cards from both halves
-                while (leftIdx < leftHalf.Count && rightIdx < rightHalf.Count)
-                {
-                    // Slightly randomize how many cards fall from each half
-                    if (rnd.NextDouble() < 0.5)
-                    {
-                        shuffledDeck.Add(leftHalf[leftIdx++]);
-                    }
-                    else
-                    {
-                        shuffledDeck.Add(rightHalf[rightIdx++]);
-                    }
-                }
-
-                // Add remaining cards
-                shuffledDeck.AddRange(leftHalf.GetRange(leftIdx, leftHalf.Count - leftIdx));
-                shuffledDeck.AddRange(rightHalf.GetRange(rightIdx, rightHalf.Count - rightIdx));
-
-                Deck = shuffledDeck;
-
-                // Sometimes do a simple cut after the riffle
-                if (rnd.NextDouble() < 0.3)
-                {
-                    int cutLocation = rnd.Next(15, T.DeckSize - 15);
-                    var temp = Deck.GetRange(0, cutLocation);
-                    Deck.RemoveRange(0, cutLocation);
-                    Deck.AddRange(temp);
-                }
-            }
-        }
         private void ShuffleCards()
         {
-            int ShuffleCount = 15;
+            int ShuffleCount = 3;
             if (Deck==null || Deck.Count != T.DeckSize)
             {
-                GetNewShuffledDeck();
+                Deck = new List<string>();
+                T.Suits.ForEach(s => T.Ranks.ForEach(r => Deck.Add(s+r)));
+                T.Suits.ForEach(s => T.Ranks.ForEach(r => Deck.Add(s+r)));
+                ShuffleCount *= 5;
             }
 
             Action<int, int> shuffle = (start, count) =>
