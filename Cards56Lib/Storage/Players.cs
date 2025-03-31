@@ -1,38 +1,45 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+
 namespace Cards56Lib
 {
     public static class Players
     {
-        private static ConcurrentDictionary<(string PlayerID, string ConnectionID), Player> _players = new ConcurrentDictionary<(string PlayerID, string ConnectionID), Player>();
+        private static readonly ConcurrentDictionary<(string PlayerID, string ConnectionID), Player> _players = new ConcurrentDictionary<(string PlayerID, string ConnectionID), Player>();
+
         public static Player AddOrUpdatePlayer(string playerID, string connectionID, string name, string lang, bool watchOnly)
         {
-            name = name.Trim();
-            if (name.Length <= 0) throw new Exception($"Non-empty name is required.");
+            // Validate input
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Non-empty name is required.", nameof(name));
 
-            Player player = GetPlayerById(playerID);
+            name = name.Trim();
+            
+            // Try to get existing player
+            var player = GetPlayerById(playerID);
             if (player != null)
             {
-                // If the player already exists, update their connectionID
+                // Update connection ID if needed
                 if (player.ConnID != connectionID)
                 {
                     player.ConnID = connectionID;
-                    Console.WriteLine($"--> Player conectionid updated: {playerID}, Connection: {connectionID}, Name: '{name}'");
+                    Console.WriteLine($"--> Player connectionID updated: {playerID}, Connection: {connectionID}, Name: '{name}'");
                 }
-                // Remove the found player from _players. It will be added back below...
+                
+                // Remove existing player entries
                 RemoveByPlayerId(playerID);
             }
             else
             {
-                // If the player does not exist, create a new one
+                // Create new player
                 player = new Player(playerID, connectionID, name, lang, watchOnly);
             }
             
-            // Add a new player with current info
+            // Add player with updated information
             if (!_players.TryAdd((player.PlayerID, player.ConnID), player))
             {
-                throw new Exception($"Failed to add player '{name}' to ALLPlayers");
+                throw new InvalidOperationException($"Failed to add player '{name}' to ALLPlayers");
             }
             
             Console.WriteLine($"--> Player added: {player.PlayerID}, Connection: {player.ConnID}, Name: '{player.Name}'");
@@ -41,39 +48,32 @@ namespace Cards56Lib
         
         public static void RemoveByPlayerId(string playerID)
         {
-            if (string.IsNullOrEmpty(playerID)) return;
-
             var keysToRemove = _players.Keys.Where(key => key.PlayerID == playerID).ToList();
             
             foreach (var key in keysToRemove)
             {
                 Console.WriteLine($"--> Removing player with Key: ({key.PlayerID}, {key.ConnectionID})");
-                Player ignored;
-                if (!_players.TryRemove(key, out ignored))
+                if (!_players.TryRemove(key, out _))
                 {
-                    throw new Exception($"Failed to remove player '{playerID}' from ALLPlayers");
+                    throw new InvalidOperationException($"Failed to remove player with Key: ({key.PlayerID}, {key.ConnectionID})");
                 }
             }
         }
         
         public static Player GetPlayerById(string playerID)
         {
-            if (string.IsNullOrEmpty(playerID)) return null;
-
-            Player p = _players.Where(kvp => kvp.Key.PlayerID == playerID)
+            return _players
+                .Where(kvp => kvp.Key.PlayerID == playerID)
                 .Select(kvp => kvp.Value)
                 .FirstOrDefault();
-            return p;
         }
-
+        
         public static Player GetPlayerByConnectionId(string connectionID)
         {
-            if (string.IsNullOrEmpty(connectionID)) return null;
-            
-            Player p = _players.Where(kvp => kvp.Key.ConnectionID == connectionID)
+            return _players
+                .Where(kvp => kvp.Key.ConnectionID == connectionID)
                 .Select(kvp => kvp.Value)
                 .FirstOrDefault();
-            return p;
         }
     }
 }
