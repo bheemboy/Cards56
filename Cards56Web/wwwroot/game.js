@@ -17,6 +17,7 @@ class Game
         this.bidPanel.setBidBtnClicked(this.onBidEvent);
         
         this.gameState;
+        this.playerID = "";
         this.currentPlayer = -1;
         this.AutoPlayTimer = null;
 
@@ -78,7 +79,7 @@ class Game
         let self = this;
         try
         {
-            this.hubConnection.invoke("RegisterPlayer", this.registerName, this.lang, watchOnly);
+            this.hubConnection.invoke("RegisterPlayer", this.PlayerID, this.registerName, this.lang, watchOnly);
         }
         catch (error)
         {
