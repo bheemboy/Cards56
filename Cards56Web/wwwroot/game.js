@@ -79,8 +79,8 @@ class Game
         let self = this;
         try
         {
-            console.log('Registering Player: ' + this.PlayerID);
-            this.hubConnection.invoke("RegisterPlayer", this.PlayerID, this.registerName, this.lang, watchOnly);
+            console.log('Registering Player: ' + this.playerID);
+            this.hubConnection.invoke("RegisterPlayer", this.playerID, this.registerName, this.lang, watchOnly);
         }
         catch (error)
         {
@@ -91,7 +91,7 @@ class Game
     onRegisterPlayerCompleted = (player) =>
     {
         this.playerID = player.playerID;
-        console.log('Assigned PlayerID: ' + this.PlayerID);
+        console.log('Assigned PlayerID: ' + this.playerID);
         this.hubConnection.invoke("JoinTable", this.tableType, this.tablename);
     }
 

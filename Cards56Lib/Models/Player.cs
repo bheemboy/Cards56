@@ -20,7 +20,7 @@ namespace Cards56Lib
         public Player(string playerID, string connId, string name, string lang, bool watchOnly)
         {
             ConnID = connId;
-            PlayerID = playerID?? System.Guid.NewGuid().ToString().ToUpper();
+            PlayerID = string.IsNullOrEmpty(playerID)? System.Guid.NewGuid().ToString().ToUpper() : playerID;
             Name = name;
             Lang = lang;
             Position = -1;
