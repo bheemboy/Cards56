@@ -11,43 +11,18 @@ namespace Cards56Lib
             name = name.Trim();
             if (name.Length <= 0) throw new Exception($"Non-empty name is required.");
             
-            // Check if the playerID already exists
-            var existingPlayerKey = _players.Keys.FirstOrDefault(key => key.PlayerID == playerID);
+            // Remove any existing player entry with old connectionID
+            RemoveByPlayerId(playerID);
             
-            if (existingPlayerKey != default)
+            // Add a new player with current info
+            Player player = new Player(playerID, connectionID, name, lang, watchOnly);
+            if (!_players.TryAdd((playerID, connectionID), player))
             {
-                // Player exists, update the connectionID
-                if (_players.TryRemove(existingPlayerKey, out Player existingPlayer))
-                {
-                    // Update the connection ID
-                    existingPlayer = new Player(playerID, connectionID, existingPlayer.Name, existingPlayer.Lang, existingPlayer.WatchOnly);
-                    
-                    // Add back to the collection with updated connection ID
-                    if (!_players.TryAdd((playerID, connectionID), existingPlayer))
-                    {
-                        throw new Exception($"Failed to update connection ID for player '{playerID}'");
-                    }
-                    
-                    Console.WriteLine($"--> Player Updated: {playerID}, New Connection: {connectionID}, Name: '{existingPlayer.Name}'");
-                    return existingPlayer;
-                }
-                else
-                {
-                    throw new Exception($"Failed to update player '{playerID}' in ALLPlayers");
-                }
+                throw new Exception($"Failed to add player '{name}' to ALLPlayers");
             }
-            else
-            {
-                // New player
-                Player player = new Player(playerID, connectionID, name, lang, watchOnly);
-                if (!_players.TryAdd((playerID, connectionID), player))
-                {
-                    throw new Exception($"Failed to add player '{name}' to ALLPlayers");
-                }
-                
-                Console.WriteLine($"--> Player Registered: {playerID}, Connection: {connectionID}, Name: '{name}'");
-                return player;
-            }
+            
+            Console.WriteLine($"--> Player Registered: {playerID}, Connection: {connectionID}, Name: '{name}'");
+            return player;
         }
         
         public static void RemoveByPlayerId(string playerID)
