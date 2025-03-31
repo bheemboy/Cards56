@@ -15,10 +15,12 @@ namespace Cards56Lib
             if (player != null)
             {
                 // If the player already exists, update their connectionID
-                player.ConnID = connectionID;
-                Console.WriteLine($"--> Player Updated: {playerID}, Connection: {connectionID}, Name: '{name}'");
-
-                // Remove any existing player entry with old connectionID
+                if (player.ConnID != connectionID)
+                {
+                    player.ConnID = connectionID;
+                    Console.WriteLine($"--> Player conectionid updated: {playerID}, Connection: {connectionID}, Name: '{name}'");
+                }
+                // Remove the found player from _players. It will be added back below...
                 RemoveByPlayerId(playerID);
             }
             else
@@ -28,55 +30,50 @@ namespace Cards56Lib
             }
             
             // Add a new player with current info
-            if (!_players.TryAdd((playerID, connectionID), player))
+            if (!_players.TryAdd((player.PlayerID, player.ConnID), player))
             {
                 throw new Exception($"Failed to add player '{name}' to ALLPlayers");
             }
             
-            Console.WriteLine($"--> Player Registered: {playerID}, Connection: {connectionID}, Name: '{name}'");
+            Console.WriteLine($"--> Player added: {player.PlayerID}, Connection: {player.ConnID}, Name: '{player.Name}'");
             return player;
         }
         
         public static void RemoveByPlayerId(string playerID)
         {
-            var playerKey = _players.Keys.FirstOrDefault(key => key.PlayerID == playerID);
+            if (string.IsNullOrEmpty(playerID)) return;
+
+            var keysToRemove = _players.Keys.Where(key => key.PlayerID == playerID).ToList();
             
-            if (playerKey != default)
+            foreach (var key in keysToRemove)
             {
+                Console.WriteLine($"--> Removing player with Key: ({key.PlayerID}, {key.ConnectionID})");
                 Player ignored;
-                if (!_players.TryRemove(playerKey, out ignored))
+                if (!_players.TryRemove(key, out ignored))
                 {
                     throw new Exception($"Failed to remove player '{playerID}' from ALLPlayers");
                 }
-                
-                Console.WriteLine($"--> Player Removed: {playerID}, Connection: {playerKey.ConnectionID}");
             }
         }
         
-        // Helper method to find a player by their playerID
         public static Player GetPlayerById(string playerID)
         {
-            var playerKey = _players.Keys.FirstOrDefault(key => key.PlayerID == playerID);
-            
-            if (playerKey != default && _players.TryGetValue(playerKey, out Player player))
-            {
-                return player;
-            }
-            
-            return null;
+            if (string.IsNullOrEmpty(playerID)) return null;
+
+            Player p = _players.Where(kvp => kvp.Key.PlayerID == playerID)
+                .Select(kvp => kvp.Value)
+                .FirstOrDefault();
+            return p;
         }
-        
-        // Helper method to find a player by their connectionID
+
         public static Player GetPlayerByConnectionId(string connectionID)
         {
-            var playerKey = _players.Keys.FirstOrDefault(key => key.ConnectionID == connectionID);
+            if (string.IsNullOrEmpty(connectionID)) return null;
             
-            if (playerKey != default && _players.TryGetValue(playerKey, out Player player))
-            {
-                return player;
-            }
-            
-            return null;
+            Player p = _players.Where(kvp => kvp.Key.ConnectionID == connectionID)
+                .Select(kvp => kvp.Value)
+                .FirstOrDefault();
+            return p;
         }
     }
 }
