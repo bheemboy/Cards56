@@ -79,6 +79,7 @@ class Game
         let self = this;
         try
         {
+            self.LogMessage('Registering Player: ' + this.PlayerID);
             this.hubConnection.invoke("RegisterPlayer", this.PlayerID, this.registerName, this.lang, watchOnly);
         }
         catch (error)
@@ -90,6 +91,7 @@ class Game
     onRegisterPlayerCompleted = (player) =>
     {
         this.playerID = player.playerID;
+        self.LogMessage('Assigned PlayerID: ' + this.PlayerID);
         this.hubConnection.invoke("JoinTable", this.tableType, this.tablename);
     }
 
