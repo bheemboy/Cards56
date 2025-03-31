@@ -10,12 +10,24 @@ namespace Cards56Lib
         {
             name = name.Trim();
             if (name.Length <= 0) throw new Exception($"Non-empty name is required.");
-            
-            // Remove any existing player entry with old connectionID
-            RemoveByPlayerId(playerID);
+
+            Player player = GetPlayerById(playerID);
+            if (player != null)
+            {
+                // If the player already exists, update their connectionID
+                player.ConnID = connectionID;
+                Console.WriteLine($"--> Player Updated: {playerID}, Connection: {connectionID}, Name: '{name}'");
+
+                // Remove any existing player entry with old connectionID
+                RemoveByPlayerId(playerID);
+            }
+            else
+            {
+                // If the player does not exist, create a new one
+                player = new Player(playerID, connectionID, name, lang, watchOnly);
+            }
             
             // Add a new player with current info
-            Player player = new Player(playerID, connectionID, name, lang, watchOnly);
             if (!_players.TryAdd((playerID, connectionID), player))
             {
                 throw new Exception($"Failed to add player '{name}' to ALLPlayers");
