@@ -1,21 +1,18 @@
 # GitHub Actions workflow for building and publishing multi-architecture Docker images
 # This workflow creates both AMD64 and ARM64 compatible images and pushes them to Docker Hub
 name: Build and publish on dockerhub
-
 # Workflow triggers
 on:
   # Uncomment to automatically build on releases
   # release:
   #   types: [published]
-  
+ 
   # Manual trigger via GitHub Actions UI
   workflow_dispatch:
-
 # Environment variables that apply to all jobs
 env:
   # Cache Docker layers between runs for improved performance
   BUILDX_CACHE_DIR: /tmp/.buildx-cache
-
 # Define jobs
 jobs:
   build:
@@ -24,31 +21,45 @@ jobs:
     permissions:
       contents: read  # Explicitly declare required permissions
       packages: write # Required if you also push to GHCR
-    
+   
     steps:
       # Step 1: Check out the repository code
       - name: Checkout repository
         uses: actions/checkout@v4  # Latest version as of March 2025
-      
+     
       # Step 2: Authenticate with Docker Hub
       - name: Login to DockerHub
         uses: docker/login-action@v3  # Preferred over direct docker login
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
+     
       # Step 3: Generate build date for versioning
       - name: Get current date
         id: date
         # Modern GitHub Actions output syntax
         run: echo "date=$(date +'%Y.%m.%d')" >> $GITHUB_OUTPUT
       
+      # Step 3a: Extract branch name for tagging
+      - name: Extract branch name
+        id: branch
+        shell: bash
+        run: |
+          BRANCH=${GITHUB_REF#refs/heads/}
+          if [ "$BRANCH" = "master" ]; then
+            echo "tag_suffix=" >> $GITHUB_OUTPUT
+            echo "using_master=true" >> $GITHUB_OUTPUT
+          else
+            echo "tag_suffix=-${BRANCH}" >> $GITHUB_OUTPUT
+            echo "using_master=false" >> $GITHUB_OUTPUT
+          fi
+     
       # Step 4: Set up QEMU emulation to build for different CPU architectures
       - name: Set up QEMU for multi-architecture builds
         uses: docker/setup-qemu-action@v3
         with:
           platforms: arm64,amd64  # Specify target platforms
-      
+     
       # Step 5: Set up Docker Buildx for multi-architecture builds
       - name: Set up Docker Buildx
         id: buildx
@@ -56,7 +67,7 @@ jobs:
         with:
           # Use persistent cache to speed up builds
           buildkitd-flags: --debug
-      
+     
       # Step 6: Cache Docker layers between builds for faster execution
       - name: Cache Docker layers
         uses: actions/cache@v4
@@ -65,7 +76,7 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
-      
+     
       # Step 7: Build and push multi-architecture Docker images
       - name: Build and push Docker images
         uses: docker/build-push-action@v5
@@ -75,20 +86,40 @@ jobs:
           platforms: linux/amd64,linux/arm64
           # Enable pushing to Docker Hub
           push: true
-          # Set both latest tag and date-based tag for versioning
+          # Set tags based on branch (with branch name suffix for non-master branches)
           tags: |
-            bheemboy/cards56web:latest
-            bheemboy/cards56web:${{ steps.date.outputs.date }}
+            bheemboy/cards56web:latest${{ steps.branch.outputs.tag_suffix }}
+            bheemboy/cards56web:${{ steps.date.outputs.date }}${{ steps.branch.outputs.tag_suffix }}
           # Add build metadata for better traceability
           labels: |
             org.opencontainers.image.created=${{ steps.date.outputs.date }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.branch=${{ github.ref_name }}
           # Use cache for faster builds
           cache-from: type=local,src=${{ env.BUILDX_CACHE_DIR }}
           cache-to: type=local,dest=${{ env.BUILDX_CACHE_DIR }}-new,mode=max
       
-      # Step 8: Move cache to avoid large cache files from action/cache
+      # Step 8: Also tag as latest (without suffix) if this is the master branch
+      - name: Tag as latest for master branch
+        if: steps.branch.outputs.using_master == 'true'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            bheemboy/cards56web:latest
+            bheemboy/cards56web:${{ steps.date.outputs.date }}
+          labels: |
+            org.opencontainers.image.created=${{ steps.date.outputs.date }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.branch=${{ github.ref_name }}
+          cache-from: type=local,src=${{ env.BUILDX_CACHE_DIR }}
+          # Don't write to cache again as it was already done in the previous step
+     
+      # Step 9: Move cache to avoid large cache files from action/cache
       - name: Move cache
         run: |
           rm -rf ${{ env.BUILDX_CACHE_DIR }}

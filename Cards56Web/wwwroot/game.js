@@ -2,11 +2,11 @@
 
 class Game
 {
-    constructor(registername, tableType, tablename, lang, players, table, bidPanel, watchOnly)
+    constructor(registername, tableType, privatetablename, lang, players, table, bidPanel, watchOnly)
     {
         this.registerName = registername;
         this.tableType = tableType;
-        this.tablename = tablename;
+        this.privatetablename = privatetablename;
         this.lang = lang;
         this.players = players;
         this.table = table;
@@ -17,6 +17,7 @@ class Game
         this.bidPanel.setBidBtnClicked(this.onBidEvent);
         
         this.gameState;
+        this.playerID = "";
         this.currentPlayer = -1;
         this.AutoPlayTimer = null;
 
@@ -78,7 +79,8 @@ class Game
         let self = this;
         try
         {
-            this.hubConnection.invoke("RegisterPlayer", this.registerName, this.lang, watchOnly);
+            console.log(`Registering with PlayerID: '${this.playerID}'`);
+            this.hubConnection.invoke("RegisterPlayer", this.playerID, this.registerName, this.lang, watchOnly);
         }
         catch (error)
         {
@@ -88,8 +90,16 @@ class Game
 
     onRegisterPlayerCompleted = (player) =>
     {
+        console.log(`Assigned PlayerID: '${player.playerID}'`);
         this.playerID = player.playerID;
-        this.hubConnection.invoke("JoinTable", this.tableType, this.tablename);
+        if (!player.tablename)
+        {
+            this.hubConnection.invoke("JoinTable", this.tableType, this.privatetablename);
+        }
+        else
+        {
+            console.log('Player already on table: ' + player.tablename);
+        }
     }
 
     OnStateUpdated = (jsonState) =>

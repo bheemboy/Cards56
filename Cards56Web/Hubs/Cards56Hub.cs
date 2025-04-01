@@ -11,7 +11,7 @@ namespace Cards56Web
     public interface ICards56Hub
     {
         // METHODS
-        Task RegisterPlayer(string playerName, string lang, bool watchOnly); // lang = 'en' or 'ml'
+        Task RegisterPlayer(string playerID, string playerName, string lang, bool watchOnly); // lang = 'en' or 'ml'
         Task JoinTable(int tableType, string privateTableId); // tableType=0, privateTableId="" === public table
         Task PlaceBid(int bid);
         Task PassBid();
@@ -57,16 +57,26 @@ namespace Cards56Web
         {
             try
             {
-                Player playerLeft = Players.All[Context.ConnectionId];
-                Console.WriteLine($"--> Player disconnected: {Context.ConnectionId}, Name: '{playerLeft.Name}', Table: '{playerLeft.TableName}'");
-                if (!String.IsNullOrEmpty(playerLeft.TableName))
+                // Try to find player by connection ID and remove them if found
+                Player playerLeft = Players.GetPlayerByConnectionId(Context.ConnectionId);
+                if (playerLeft != null)
                 {
-                    TableController table = new TableController(GameTables.All[playerLeft.TableName], StateUpdated);
-                    table.LeaveTable(playerLeft);
-                    await Groups.RemoveFromGroupAsync(Context.ConnectionId, table.TableName);
-                    if (table.TableEmpty) GameTables.RemoveTable(table.TableName);
+                    Console.WriteLine($"--> Player disconnected: {Context.ConnectionId}, Name: '{playerLeft.Name}', Table: '{playerLeft.TableName}'");
+                    if (!String.IsNullOrEmpty(playerLeft.TableName))
+                    {
+                        TableController table = new TableController(GameTables.All[playerLeft.TableName], StateUpdated);
+                        table.LeaveTable(playerLeft);
+                        await Groups.RemoveFromGroupAsync(Context.ConnectionId, table.TableName);
+                        if (table.TableEmpty) GameTables.RemoveTable(table.TableName);
+                    }
+                    Players.RemoveByPlayerId(playerLeft.PlayerID);
                 }
-                Players.RemovePlayerById(playerLeft.ConnID);
+                else
+                {
+                    // Somtimes it is possible that the connection ID is not present in the list of players
+                    // This can happen if the player reconnects to the server and the connection ID is updated
+                    Console.WriteLine($"--> Player disconnected: {Context.ConnectionId}, Name: 'Unknown'");
+                }
             }
             catch (System.Exception e)
             {
@@ -80,7 +90,7 @@ namespace Cards56Web
             Clients.Client(PlayerID)?.OnStateUpdated(jsonState);
         }
 
-        public async Task RegisterPlayer(string playerName, string lang, bool watchOnly)
+        public async Task RegisterPlayer(string playerID, string playerName, string lang, bool watchOnly)
         {
             try
             {
@@ -94,7 +104,7 @@ namespace Cards56Web
                 Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(lang);
 
                 // Save the player's name to a list of players
-                Player player = Players.AddPlayer(Context.ConnectionId, playerName, lang, watchOnly);
+                Player player = Players.AddOrUpdatePlayer(playerID, Context.ConnectionId, playerName, lang, watchOnly);
 
                 // Return player and the list of tables
                 await Clients.Caller.OnRegisterPlayerCompleted(player);
@@ -115,7 +125,8 @@ namespace Cards56Web
                 if (Context.Items.ContainsKey("Lang"))
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture((string)Context.Items["Lang"]);
 
-                Player playerJoined = Players.All[Context.ConnectionId];
+                Player player = Players.GetPlayerByConnectionId(Context.ConnectionId) ?? throw new PlayerNotRegisteredException();
+                if (!string.IsNullOrEmpty(player.TableName)) throw new PlayerAlreadyOnTableException();
 
                 TableController table=null;
                 if (string.IsNullOrEmpty(privateTableId))
@@ -127,8 +138,8 @@ namespace Cards56Web
                         joinAttempts++;
                         try
                         {
-                            table = new TableController(GameTables.GetFreeTable(tableType, playerJoined.WatchOnly), StateUpdated);
-                            table.JoinTable(playerJoined); // Add player to table
+                            table = new TableController(GameTables.GetFreeTable(tableType, player.WatchOnly), StateUpdated);
+                            table.JoinTable(player); // Add player to table
                             tableJoined=true;
                         }
                         catch
@@ -145,12 +156,12 @@ namespace Cards56Web
                     if (GameTables.All.ContainsKey(privateTableId)) // Private table by name already exists
                     {
                         table = new TableController(GameTables.All[privateTableId], StateUpdated);
-                        table.JoinTable(playerJoined); // Add player to table
+                        table.JoinTable(player); // Add player to table
                     }
                     else // Let us add a new private table
                     {
                         table = new TableController(GameTables.AddTable(tableType, privateTableId), StateUpdated);
-                        table.JoinTable(playerJoined); // Add player to table
+                        table.JoinTable(player); // Add player to table
                     }
                 }
 
@@ -172,13 +183,10 @@ namespace Cards56Web
             }
         }
        
-        private Player GetValidTablePlayer()
+        private Player GetValidPlayerOnATable()
         {
-            if (!Players.All.ContainsKey(Context.ConnectionId)) throw new PlayerNotRegisteredException();
-            Player player = Players.All[Context.ConnectionId];
-
+            Player player = Players.GetPlayerByConnectionId(Context.ConnectionId) ?? throw new PlayerNotRegisteredException();
             if (string.IsNullOrEmpty(player.TableName)) throw new PlayerNotOnAnyTableException();
-
             return player;            
         }
 
@@ -189,7 +197,7 @@ namespace Cards56Web
                 if (Context.Items.ContainsKey("Lang"))
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture((string)Context.Items["Lang"]);
 
-                Player player = GetValidTablePlayer();
+                Player player = GetValidPlayerOnATable();
                 TableController table = new TableController(GameTables.All[player.TableName], StateUpdated);
                 
                 table.PlaceBid(player, bid);
@@ -210,7 +218,7 @@ namespace Cards56Web
                 if (Context.Items.ContainsKey("Lang"))
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture((string)Context.Items["Lang"]);
 
-                Player player = GetValidTablePlayer();
+                Player player = GetValidPlayerOnATable();
                 TableController table = new TableController(GameTables.All[player.TableName], StateUpdated);
 
                 try
@@ -247,7 +255,7 @@ namespace Cards56Web
                 if (Context.Items.ContainsKey("Lang"))
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture((string)Context.Items["Lang"]);
 
-                Player player = GetValidTablePlayer();
+                Player player = GetValidPlayerOnATable();
                 TableController table = new TableController(GameTables.All[player.TableName], StateUpdated);
 
                 try
@@ -284,7 +292,7 @@ namespace Cards56Web
                 if (Context.Items.ContainsKey("Lang"))
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture((string)Context.Items["Lang"]);
 
-                Player player = GetValidTablePlayer();
+                Player player = GetValidPlayerOnATable();
                 TableController table = new TableController(GameTables.All[player.TableName], StateUpdated);
 
                 table.PlayCard(player, card, roundOverDelay);
@@ -304,7 +312,7 @@ namespace Cards56Web
                 if (Context.Items.ContainsKey("Lang"))
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture((string)Context.Items["Lang"]);
 
-                Player player = GetValidTablePlayer();
+                Player player = GetValidPlayerOnATable();
                 TableController table = new TableController(GameTables.All[player.TableName], StateUpdated);
 
                 table.ShowTrump(player);
@@ -329,7 +337,7 @@ namespace Cards56Web
                 if (Context.Items.ContainsKey("Lang"))
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture((string)Context.Items["Lang"]);
 
-                TableController table = new TableController(GameTables.All[GetValidTablePlayer().TableName], StateUpdated);
+                TableController table = new TableController(GameTables.All[GetValidPlayerOnATable().TableName], StateUpdated);
                 table.StartNextGame(table.T.PlayerAt(table.Game.DealerPos+1)); // Deal cards and initialize bidding
             }
             catch (System.Exception e)
@@ -347,7 +355,7 @@ namespace Cards56Web
                 if (Context.Items.ContainsKey("Lang"))
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture((string)Context.Items["Lang"]);
 
-                Player player = GetValidTablePlayer();
+                Player player = GetValidPlayerOnATable();
                 TableController table = new TableController(GameTables.All[player.TableName], StateUpdated);
                 table.SendStateUpdatedEvents(player);
             }
@@ -366,7 +374,7 @@ namespace Cards56Web
                 if (Context.Items.ContainsKey("Lang"))
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture((string)Context.Items["Lang"]);
 
-                Player player = GetValidTablePlayer();
+                Player player = GetValidPlayerOnATable();
                 TableController table = new TableController(GameTables.All[player.TableName], StateUpdated);
                 
                 table.ForfeitGame(player);

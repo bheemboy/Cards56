@@ -5,7 +5,7 @@ namespace Cards56Lib
     [JsonObject(MemberSerialization.OptIn)]
     public class Player
     {
-        public string ConnID {get;} // Should not be shared
+        public string ConnID {get; set;} // Should not be shared
         [JsonProperty]
         public string PlayerID {get;}
         [JsonProperty]
@@ -17,10 +17,10 @@ namespace Cards56Lib
         [JsonProperty]
         public bool WatchOnly {get; set;}
 
-        public Player(string ConnId, string name, string lang, bool watchOnly)
+        public Player(string playerID, string connId, string name, string lang, bool watchOnly)
         {
-            ConnID = ConnId;
-            PlayerID = System.Guid.NewGuid().ToString().ToUpper();
+            ConnID = connId;
+            PlayerID = string.IsNullOrEmpty(playerID)? System.Guid.NewGuid().ToString().ToUpper() : playerID;
             Name = name;
             Lang = lang;
             Position = -1;

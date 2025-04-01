@@ -53,24 +53,30 @@ namespace Cards56Lib
         {
             lock (Game)
             {
-                if (!String.IsNullOrEmpty(player.TableName)) throw new PlayerAlreadyOnTableException();
-                if (!player.WatchOnly && TableFull) throw new TableIsFullException();
-
-                int watchersMinCount = Game.Chairs.Min(c => c.Watchers.Count); // for round robin allocation
-
-                Chair freeChair = Game.Chairs.First(c => player.WatchOnly? c.Watchers.Count<=watchersMinCount: c.Occupant==null); 
-                if(!player.WatchOnly) 
+                if (String.IsNullOrEmpty(player.TableName))
                 {
-                    freeChair.Occupant = player;
+                    if (!player.WatchOnly && TableFull) throw new TableIsFullException();
+
+                    int watchersMinCount = Game.Chairs.Min(c => c.Watchers.Count); // for round robin allocation
+
+                    Chair freeChair = Game.Chairs.First(c => player.WatchOnly? c.Watchers.Count<=watchersMinCount: c.Occupant==null); 
+                    if(!player.WatchOnly) 
+                    {
+                        freeChair.Occupant = player;
+                    }
+                    else
+                    {
+                        if (freeChair.Watchers.Count > 2) throw new TooManyWatchersOnChairException();
+                        freeChair.Watchers.Add(player);
+                    }
+                    player.TableName = TableName;
+                    player.Position = freeChair.Position;
+                    Console.WriteLine($"--> Player '{player.Name}({player.ConnID})' joined gametable: '{player.TableName}' @ position: {player.Position}");
                 }
                 else
                 {
-                    if (freeChair.Watchers.Count > 2) throw new TooManyWatchersOnChairException();
-                    freeChair.Watchers.Add(player);
+                    Console.WriteLine($"--> Player '{player.Name}({player.ConnID})' already on gametable: '{player.TableName}' @ position: {player.Position}");
                 }
-                player.TableName = TableName;
-                player.Position = freeChair.Position;
-                Console.WriteLine($"--> Player '{player.Name}({player.ConnID})' joined gametable: '{player.TableName}' @ position: {player.Position}");
                 
                 SendStateUpdatedEvents();
 

@@ -4,6 +4,7 @@ class GamePanel
 {
     constructor(id, registername, tableType, lang){
         this.id = id;
+        this.playerID = "";
         this.registerName = registername;
         this.tableType = tableType;
         this.lang = lang;
@@ -52,7 +53,16 @@ class GamePanel
     ///// EVENTS ///////////////////////////
     onRegisterPlayerCompleted = (player) =>
     {
-        this.hubConnection.invoke("JoinTable", this.tableType, "");
+        console.log(`Assigned PlayerID: '${player.playerID}'`);
+        this.playerID = player.PlayerID;
+        if (!player.tablename)
+        {
+            this.hubConnection.invoke("JoinTable", this.tableType, "");
+        }
+        else
+        {
+            console.log('Player already on table: ' + player.tablename);
+        }
     }
 
     onClose = () =>
@@ -172,7 +182,7 @@ class GamePanel
         try 
         {
             this.hubConnection.start().then(function () {
-                self.hubConnection.invoke("RegisterPlayer", self.registerName, self.lang, false); //
+                self.hubConnection.invoke("RegisterPlayer", self.playerID, self.registerName, self.lang, false); //
             });
         } 
         catch (error) 
