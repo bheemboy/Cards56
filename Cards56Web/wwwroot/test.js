@@ -53,8 +53,16 @@ class GamePanel
     ///// EVENTS ///////////////////////////
     onRegisterPlayerCompleted = (player) =>
     {
+        console.log(`Assigned PlayerID: '${player.playerID}'`);
         this.playerID = player.PlayerID;
-        this.hubConnection.invoke("JoinTable", this.tableType, "");
+        if (!player.tablename)
+        {
+            this.hubConnection.invoke("JoinTable", this.tableType, "");
+        }
+        else
+        {
+            console.log('Player already on table: ' + player.tablename);
+        }
     }
 
     onClose = () =>
