@@ -55,6 +55,10 @@ namespace Cards56Lib
             GameCancelled = false;
             GameForfeited = false;
             Deck = new List<string>(); 
+            Bid = new BidInfo(T, 0);
+            Rounds = new List<RoundInfo>();
+            TrumpCard = string.Empty;
+            TeamScore = new List<int>(){0, 0};
             WinningTeam = -1;
             WinningScore = 0;
             CoolieCount = new List<int>(){T.BaseCoolieCount,T.BaseCoolieCount};

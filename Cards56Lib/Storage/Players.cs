@@ -60,7 +60,7 @@ namespace Cards56Lib
             }
         }
         
-        public static Player GetPlayerById(string playerID)
+        public static Player? GetPlayerById(string playerID)
         {
             return _players
                 .Where(kvp => kvp.Key.PlayerID == playerID)
@@ -68,7 +68,7 @@ namespace Cards56Lib
                 .FirstOrDefault();
         }
         
-        public static Player GetPlayerByConnectionId(string connectionID)
+        public static Player? GetPlayerByConnectionId(string connectionID)
         {
             return _players
                 .Where(kvp => kvp.Key.ConnectionID == connectionID)

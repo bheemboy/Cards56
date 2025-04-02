@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using System.Runtime.InteropServices;
+using System.Linq.Expressions;
 
 namespace Cards56Lib
 {
@@ -23,10 +24,10 @@ namespace Cards56Lib
         private int[] NextBidderFromTeam => Game.Bid.NextBidderFromTeam;
         private int[] OutBidChance => Game.Bid.OutBidChance;
         private int TeamScoreOf(int position) => Game.TeamScore[T.TeamOf(position)]; 
-        private bool CurrentRoundAllCardsPlayed => CurrentRound.PlayedCards.Count >= (IsThani? T.PlayersPerTeam+1: T.MaxPlayers); 
-        private int CurrentRoundWinningTeam => CurrentRoundAllCardsPlayed ? CurrentRound.Winner % 2 : -1; 
-        public RoundInfo CurrentRound => ((Game.Rounds?.Count ?? 0) > 0) ? Game.Rounds.Last() : null;
-        public char CurrentRoundSuit => ((CurrentRound?.PlayedCards.Count ?? 0) > 0)? CurrentRound.PlayedCards[0][0] : ' ';
+        private bool CurrentRoundAllCardsPlayed => CurrentRound!.PlayedCards.Count >= (IsThani? T.PlayersPerTeam+1: T.MaxPlayers); 
+        private int CurrentRoundWinningTeam => CurrentRoundAllCardsPlayed ? CurrentRound!.Winner % 2 : -1; 
+        public RoundInfo? CurrentRound => ((Game.Rounds?.Count ?? 0) > 0) ? Game.Rounds?.Last() : null;
+        public char CurrentRoundSuit => ((CurrentRound?.PlayedCards.Count ?? 0) > 0)? CurrentRound!.PlayedCards[0][0] : ' ';
         public bool AllowBidPass => Game.Bid.HighBid>=28;
         private string PlayerName(int posn) => Game.Chairs[posn].Occupant?.Name ?? posn.ToString();
         private List<string> CardsAt(int posn) => Game.Chairs[posn].Cards;
@@ -53,7 +54,7 @@ namespace Cards56Lib
         {
             lock (Game)
             {
-                if (String.IsNullOrEmpty(player.TableName))
+                if (string.IsNullOrEmpty(player.TableName))
                 {
                     if (!player.WatchOnly && TableFull) throw new TableIsFullException();
 
@@ -110,7 +111,7 @@ namespace Cards56Lib
             return jsonTxt;
         }
 
-        public void SendStateUpdatedEvents(Player player=null)
+        public void SendStateUpdatedEvents(Player? player =null)
         {
             if (StateUpdated!=null)
             {
@@ -370,14 +371,14 @@ namespace Cards56Lib
                 }
             }
         }
-        public void ShowTrump(Player player)
+        public void ShowTrump(Player player, int roundOverDelay = 0)
         {
             lock (Game)
             {
                 if (IsThani) throw new ThaniGameException();
                 if (Game.Stage < GameStage.PlayingCards) throw new CardPlayNotStartedException();
                 if (Game.Stage > GameStage.PlayingCards) throw new GameIsOverException();
-                if (CurrentRound.NextPlayer != player.Position) throw new NotPlayersTurnException(PlayerName(CurrentRound.NextPlayer));
+                if (CurrentRound!.NextPlayer != player.Position) throw new NotPlayersTurnException(PlayerName(CurrentRound.NextPlayer));
                 if (Game.TrumpExposed) throw new TrumpAlreadyExposedException();
 
                 // 1. First player in the round cannot ask to show trump 
@@ -390,7 +391,7 @@ namespace Cards56Lib
                 else
                 {
                     // 2. If the player has cards matching the round's suit
-                    string anotherCard = CardsAt(player.Position).Find(s => s[0] == CurrentRoundSuit);
+                    string? anotherCard = CardsAt(player.Position).Find(s => s[0] == CurrentRoundSuit);
                     if (!string.IsNullOrEmpty(anotherCard))
                     {
                         throw new RoundSuitCardExistsException(T.GetSuitName(CurrentRoundSuit));
@@ -403,7 +404,14 @@ namespace Cards56Lib
                 Game.Chairs[Game.Bid.HighBidder].Cards.Add(Game.TrumpCard);
                 Game.Chairs[Game.Bid.HighBidder].Cards.Sort(T.CompareCards);
 
-                SendStateUpdatedEvents();
+                if (Game.Bid.HighBidder == player.Position)
+                {
+                    PlayCard(player, Game.TrumpCard, roundOverDelay); // PlayCard will send the state updated event
+                }
+                else
+                {
+                    SendStateUpdatedEvents();
+                }
             }
         }
         private void InitializeNextGame(int dealerPos)
@@ -428,7 +436,7 @@ namespace Cards56Lib
         {
             for (int i = 0; i < T.PlayersPerTeam; i++)
             {
-                string aCard = CardsAt(team + i*2).Find(s => s[0] == card[0]);
+                string? aCard = CardsAt(team + i*2).Find(s => s[0] == card[0]);
                 if (!string.IsNullOrEmpty(aCard)) return true;
             }
             return false;
@@ -437,7 +445,7 @@ namespace Cards56Lib
         {
             if (Game.Stage < GameStage.PlayingCards) throw new CardPlayNotStartedException();
             if (Game.Stage > GameStage.PlayingCards) throw new GameIsOverException();
-            if (CurrentRound.NextPlayer != player.Position) throw new NotPlayersTurnException(PlayerName(CurrentRound.NextPlayer));
+            if (CurrentRound!.NextPlayer != player.Position) throw new NotPlayersTurnException(PlayerName(CurrentRound.NextPlayer));
             if (CurrentRoundAllCardsPlayed) throw new AllCardsPlayedForRoundException();
             if (!CardsAt(player.Position).Contains(card)) throw new CardNotFoundException();
 
@@ -445,7 +453,7 @@ namespace Cards56Lib
             if (CurrentRound.FirstPlayer != player.Position && CurrentRoundSuit != card[0]) 
             {
                 // if the player has cards of matching suit
-                string anotherCard = CardsAt(player.Position).Find(s => s[0] == CurrentRoundSuit);
+                string? anotherCard = CardsAt(player.Position).Find(s => s[0] == CurrentRoundSuit);
                 if (!string.IsNullOrEmpty(anotherCard))
                 {    
                     throw new CardNotOfRoundSuitException(T.GetSuitName(CurrentRoundSuit));
@@ -458,7 +466,7 @@ namespace Cards56Lib
                 // 1. He cannot start a round with a trump card
                 if (player.Position == CurrentRound.FirstPlayer && card.StartsWith(Game.TrumpCard[0].ToString()))
                 {
-                    string nonTrumpSuitCard = CardsAt(player.Position).Find(s => s[0] != Game.TrumpCard[0]);
+                    string? nonTrumpSuitCard = CardsAt(player.Position).Find(s => s[0] != Game.TrumpCard[0]);
                     if (!string.IsNullOrEmpty(nonTrumpSuitCard)) // unless he doesn't have any other card.
                     {
                         throw new CannotPlayTrumpSuitException();
@@ -481,7 +489,7 @@ namespace Cards56Lib
                     else 
                     {
                         // 2. the exposing player must play a trump card if he has one.
-                        string trumpCard = CardsAt(player.Position).Find(s => s[0] == Game.TrumpCard[0]);
+                        string? trumpCard = CardsAt(player.Position).Find(s => s[0] == Game.TrumpCard[0]);
                         if (card[0] != Game.TrumpCard[0] && !string.IsNullOrEmpty(trumpCard))
                             throw new MustPlayTrumpSuitException(T.GetSuitName(Game.TrumpCard[0]));
                     }
@@ -496,7 +504,7 @@ namespace Cards56Lib
             {
                 if (CanPlayCard(player, card))
                 {
-                    CurrentRound.AutoPlayNextCard = "";
+                    CurrentRound!.AutoPlayNextCard = "";
                     CurrentRound.PlayedCards.Add(card);
                     CurrentRound.TrumpExposed.Add(Game.TrumpExposed);
 
@@ -551,12 +559,12 @@ namespace Cards56Lib
                 if (Game.Rounds.Count() < 8)
                 {
                     // prepare next round
-                    Game.Rounds.Add(new RoundInfo(CurrentRound.Winner));
+                    Game.Rounds.Add(new RoundInfo(CurrentRound!.Winner));
                 }
             }
             else
             {
-                CurrentRound.NextPlayer = T.PlayerAt((CurrentRound.NextPlayer+1));
+                CurrentRound!.NextPlayer = T.PlayerAt((CurrentRound.NextPlayer+1));
                 if (IsThani && (T.SameTeam(CurrentRound.NextPlayer, CurrentRound.FirstPlayer))) // Skip teammate
                 {
                     CurrentRound.NextPlayer = T.PlayerAt((CurrentRound.NextPlayer+1));
@@ -569,7 +577,7 @@ namespace Cards56Lib
         {
             // Set the Round winner
             int winner = 0;
-            string winnerCard = CurrentRound.PlayedCards[winner];
+            string winnerCard = CurrentRound!.PlayedCards[winner];
 
             for(int i = 1; i < CurrentRound.PlayedCards.Count; i++)
             {
@@ -625,7 +633,7 @@ namespace Cards56Lib
         {
             // Check if nextplayer's card can be autoplayed
             // If there is only one card to play
-            if (CardsAt(CurrentRound.NextPlayer).Count == 1)
+            if (CardsAt(CurrentRound!.NextPlayer).Count == 1)
             {
                 CurrentRound.AutoPlayNextCard = CardsAt(CurrentRound.NextPlayer).First();
             }
@@ -731,7 +739,7 @@ namespace Cards56Lib
         {
             if (!IsThani) // Autoplay works for thani also, but do not enable it - because it is more fun to play it out. 
             {
-                if (CurrentRound.PlayedCards.Count == 0) // this is a new round
+                if (CurrentRound!.PlayedCards.Count == 0) // this is a new round
                 {
                     // Check if no one else has trump cards and the next player has all bigcards
                     if (Game.Stage!=GameStage.GameOver && (IsThani || Game.TrumpExposed) && PlayerHasAllBiggerCards(CurrentRound.NextPlayer))
@@ -778,10 +786,10 @@ namespace Cards56Lib
                 // If thani skip team members 
                 if (i==0 || !IsThani || !T.SameTeam(posn, posn+i))
                 {
-                    string card = CardsAt(T.PlayerAt(posn+i)).FirstOrDefault(c2 => c2[0]==FirstCard[0]);
+                    string? card = CardsAt(T.PlayerAt(posn+i)).FirstOrDefault(c2 => c2[0]==FirstCard[0]);
                     if (string.IsNullOrEmpty(card)) card = CardsAt(T.PlayerAt(posn+i)).First();
 
-                    CurrentRound.PlayedCards.Add(card);
+                    CurrentRound!.PlayedCards.Add(card);
                     CurrentRound.TrumpExposed.Add(Game.TrumpExposed);
 
                     // return played card to deck and remove the card from the player

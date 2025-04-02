@@ -1,26 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Cards56Web;
 
-namespace Cards56Web
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHealthChecks().AddCheck<SignalRHealthCheck>("signalr_health_check");
+builder.Services.AddCors();
+builder.Services.AddSignalR();
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
-}
+var app = builder.Build();
+app.UseCors(builder => builder
+    .SetIsOriginAllowed(_ => true) // Allow any origin
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials());
+
+app.UseFileServer(); // enable static files and default file serving 
+app.MapHealthChecks("/health");
+app.MapHub<Cards56Hub>("/Cards56Hub");
+
+app.Run();

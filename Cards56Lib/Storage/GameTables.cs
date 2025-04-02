@@ -6,7 +6,7 @@ namespace Cards56Lib
     public static class GameTables
     {
         private static object _lock = new object();
-        private static ConcurrentDictionary<string, GameTable> _tables;
+        private static ConcurrentDictionary<string, GameTable> _tables = new();
         public static ConcurrentDictionary<string, GameTable> All
         {
             get
@@ -37,8 +37,7 @@ namespace Cards56Lib
             {
                 if (All.ContainsKey(tableId))
                 {
-                    GameTable ignored;
-                    if (!All.TryRemove(tableId, out ignored))
+                    if (!All.TryRemove(tableId, out _))
                     {
                         throw new Exception($"Failed to remove table '{tableId}' from AllTables");
                     }
