@@ -12,7 +12,7 @@ namespace Cards56Lib
         public string Name {get;}
         [JsonProperty]
         public string Lang {get;}
-        public string TableName {get; set;}
+        public string? TableName {get; set;}
         public int Position {get; set;}
         [JsonProperty]
         public bool WatchOnly {get; set;}

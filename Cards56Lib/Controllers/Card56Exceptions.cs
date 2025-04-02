@@ -1,71 +1,73 @@
 using NGettext;
 using System.Diagnostics;
-using System.Threading;
 
 namespace Cards56Lib
 {
-    public class Card56ErrorData
+    public class Card56ErrorData()
     {
-        public int ErrorCode {get; set;}
-        public string ErrorName {get;set;}
-        public int MinBid {get; set;}
-        public int MaxBid {get; set;}
-        public string PlayerName {get; set;}
-        public string Suit {get; set;}
-        public string ThuruppuCard {get;set;}
-        public string TrumpSuit {get;set;}
-        public Card56ErrorData()
-        {
-            ErrorCode = Cards56Error.UnKnownException;
-            ErrorName = "";
-            MinBid = 0;
-            MaxBid = 0;
-            PlayerName = "";
-            Suit = "";
-            ThuruppuCard = "";
-            TrumpSuit = "";
-        }
+        public int ErrorCode {get; set;} = Cards56Error.UnKnownException;
+        public string ErrorName {get;set;} = "";
+        public int MinBid {get; set;} = 0;
+        public int MaxBid {get; set;} = 0;
+        public string PlayerName {get; set;} = "";
+        public string Suit {get; set;} = "";
+        public string ThuruppuCard {get;set;} = "";
+        public string TrumpSuit {get;set;} = "";
         public static Card56ErrorData GetBidOutOfRangeErrorData(int MinBid, int MaxBid)
         {
-            Card56ErrorData error = new Card56ErrorData();
-            error.MinBid = MinBid;
-            error.MaxBid = MaxBid;
+            Card56ErrorData error = new()
+            {
+                MinBid = MinBid,
+                MaxBid = MaxBid
+            };
             return error;
         }
         public static Card56ErrorData GetNotPlayersTurnErrorData(string playerName)
         {
-            Card56ErrorData error = new Card56ErrorData();
-            error.PlayerName = playerName;
+            Card56ErrorData error = new()
+            {
+                PlayerName = playerName
+            };
             return error;
         }
         public static Card56ErrorData GetNotHighBidderErrorData(string playerName)
         {
-            Card56ErrorData error = new Card56ErrorData();
-            error.PlayerName = playerName;
+            Card56ErrorData error = new()
+            {
+                PlayerName = playerName
+            };
             return error;
         }
         public static Card56ErrorData GetCardNotOfRoundSuitErrorData(string suit)
         {
-            Card56ErrorData error = new Card56ErrorData();
-            error.Suit = suit;
+            Card56ErrorData error = new()
+            {
+                Suit = suit
+            };
             return error;
         }
         public static Card56ErrorData GetMustPlayTheTrumpCardErrorData(string thuruppuCard)
         {
-            Card56ErrorData error = new Card56ErrorData();
-            error.ThuruppuCard = thuruppuCard;
+            Card56ErrorData error = new()
+            {
+                ThuruppuCard = thuruppuCard
+            };
             return error;
         }
         public static Card56ErrorData GetMustPlayTrumpSuitErrorData(string trumpSuit)
         {
-            Card56ErrorData error = new Card56ErrorData();
-            error.TrumpSuit = trumpSuit;
+            Card56ErrorData error = new()
+            {
+                TrumpSuit = trumpSuit
+            };
             return error;
         }
         public static Card56ErrorData GetRoundSuitCardExistsErrorData(string suit)
         {
-            Card56ErrorData error = new Card56ErrorData();
-            error.Suit = suit;
+            Card56ErrorData error = new()
+            {
+                Suit = suit
+            };
             return error;
         }
     }
@@ -74,16 +76,16 @@ namespace Cards56Lib
     [System.Serializable]
     public class Card56Exception : System.Exception
     {
-        public Card56ErrorData ErrorData {get;}
-        ICatalog _catalog;
-        public override string Message {get;}
-        public Card56Exception(int errorCode, Card56ErrorData errorData=null) : base() 
+        public Card56ErrorData? ErrorData {get;} = null;
+        readonly Catalog? _catalog;
+        public override string Message {get;} = "";
+        public Card56Exception(int errorCode, Card56ErrorData? errorData = null) : base() 
         {
-            ErrorData = (errorData!=null)? errorData: new Card56ErrorData();
+            ErrorData = errorData ?? new Card56ErrorData();
             ErrorData.ErrorCode = errorCode;
-            ErrorData.ErrorName = this.GetType().Name;
+            ErrorData.ErrorName = GetType().Name;
 
-            string StringsDir = Card56Exception.AssemblyDirectory + System.IO.Path.DirectorySeparatorChar + "locale";
+            string StringsDir = AppContext.BaseDirectory + "locale";
         	_catalog = new Catalog("strings", StringsDir, Thread.CurrentThread.CurrentCulture);
             Message = _catalog.GetString(Cards56Error.MSG[errorCode]);
 
@@ -120,16 +122,6 @@ namespace Cards56Lib
             }
         }
         private Card56Exception() { }
-        private static string AssemblyDirectory
-        {
-            get
-            {
-                string codeBase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
-                System.UriBuilder uri = new System.UriBuilder(codeBase);
-                string path = System.Uri.UnescapeDataString(uri.Path);
-                return System.IO.Path.GetDirectoryName(path);
-            }
-        }
     }
     public class BiddingNotStartedException : Card56Exception
     {

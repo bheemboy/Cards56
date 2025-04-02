@@ -1,11 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>Cards56Web</RootNamespace>
-    <UserSecretsId>40c2d4a4-460c-4b7b-81c1-c3067674c649</UserSecretsId>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cards56Lib\Cards56Lib.csproj" />
   </ItemGroup>
+
 </Project>

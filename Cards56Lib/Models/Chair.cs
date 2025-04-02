@@ -12,7 +12,7 @@ namespace Cards56Lib
         public int Position {get; set;}
         public List<string> Cards {get; set;}
         [JsonProperty]
-        public Player Occupant {get; set;}
+        public Player? Occupant {get; set;}
         [JsonProperty]
         public List<Player> Watchers {get; set;}
         [JsonProperty]
@@ -26,6 +26,7 @@ namespace Cards56Lib
             Occupant = null;
             KodiCount = 0;
             KodiJustInstalled = false;
+            Cards = [];
             Watchers = new List<Player>();
         }
    }
