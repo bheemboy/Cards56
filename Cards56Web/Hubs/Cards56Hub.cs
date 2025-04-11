@@ -103,7 +103,14 @@ namespace Cards56Web
                     lang = "ml-IN";
                 else
                     lang = "en-US";
-                Context.Items.Add("Lang", lang);
+                if (Context.Items.ContainsKey("Lang"))
+                {
+                    Context.Items["Lang"] = lang; // Update the existing value
+                }
+                else
+                {
+                    Context.Items.Add("Lang", lang); // Add new key-value pair
+                }
 
                 Player player = _GameController.AddOrUpdatePlayer(playerID, playerName, watchOnly); // Add or update player
 
