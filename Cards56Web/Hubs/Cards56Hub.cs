@@ -1,9 +1,4 @@
-using System;
-using System.Linq;
-using System.Globalization;
-using System.Threading;
 using Microsoft.AspNetCore.SignalR;
-using System.Threading.Tasks;
 using Cards56Lib;
 
 namespace Cards56Web
@@ -21,6 +16,7 @@ namespace Cards56Web
         Task StartNextGame();        
         Task RefreshState();
         Task ForfeitGame();
+        Task UnregiterPlayer();
     }
     public enum Cards56HubMethod
     {
@@ -34,6 +30,7 @@ namespace Cards56Web
         StartNextGame=8,
         RefreshState=9,
         ForfeitGame=10,
+        UnregiterPlayer=11,
     }
     public interface ICards56HubEvents
     {
@@ -83,14 +80,7 @@ namespace Cards56Web
         }
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            try
-            {
-                _GameController.DisconnectPlayer(); // Disconnect player from game
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            await UnregiterPlayer();
             await base.OnDisconnectedAsync(exception);
         }
 
@@ -122,7 +112,17 @@ namespace Cards56Web
                 await HandleCard56Exception(e, Cards56HubMethod.RegisterPlayer);
             }
         }
-
+        public async Task UnregiterPlayer()
+        {
+            try
+            {
+                _GameController.DisconnectPlayer(); // Disconnect player from game
+            }
+            catch (Exception e)
+            {
+                await HandleCard56Exception(e, Cards56HubMethod.UnregiterPlayer);
+            }
+        }
         public async Task JoinTable(int tableType, string privateTableId)
         {
             try

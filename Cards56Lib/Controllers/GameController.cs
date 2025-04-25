@@ -2,18 +2,18 @@ namespace Cards56Lib
 {
     public class GameController
     {
-        private readonly string ConnID, Lang;
+        private readonly string _ConnID, _Lang;
         private readonly StateUpdatedDelegate OnStateUpdated;
         public GameController(string connID, string lang, StateUpdatedDelegate onStateUpdated)
         {
-            ConnID = connID;
-            Lang = lang;
+            _ConnID = connID;
+            _Lang = lang;
             OnStateUpdated = onStateUpdated;
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.CreateSpecificCulture(lang);
         }
         private Player GetCurrentPlayer()
         {
-            return Players.GetPlayerByConnectionId(ConnID) ?? throw new PlayerNotRegisteredException();
+            return Players.GetPlayerByConnectionId(_ConnID) ?? throw new PlayerNotRegisteredException();
         }
         private TableController GetTableController() 
         {
@@ -24,35 +24,28 @@ namespace Cards56Lib
         public Player AddOrUpdatePlayer(string playerID, string playerName, bool watchOnly)
         {
             // Save the player's name to a list of players
-            return Players.AddOrUpdatePlayer(playerID, ConnID, playerName, Lang, watchOnly);
+            return Players.AddOrUpdatePlayer(playerID, _ConnID, playerName, _Lang, watchOnly);
         }
         public void DisconnectPlayer()
         {
-            try
+            // Try to find player by connection ID and remove them if found
+            Player? playerLeft = Players.GetPlayerByConnectionId(_ConnID);
+            if (playerLeft != null)
             {
-                // Try to find player by connection ID and remove them if found
-                Player? playerLeft = Players.GetPlayerByConnectionId(ConnID);
-                if (playerLeft != null)
+                Console.WriteLine($"--> Player disconnected: PlayerID: '{playerLeft.PlayerID}', ConnID: '{_ConnID}', Name: '{playerLeft.Name}'");
+                if (!string.IsNullOrEmpty(playerLeft.TableName))
                 {
-                    Console.WriteLine($"--> Player disconnected: PlayerID: '{playerLeft.PlayerID}', ConnID: '{ConnID}', Name: '{playerLeft.Name}'");
-                    if (!string.IsNullOrEmpty(playerLeft.TableName))
-                    {
-                        TableController table = new TableController(GameTables.All[playerLeft.TableName], OnStateUpdated);
-                        table.LeaveTable(playerLeft);
-                        if (table.TableEmpty) GameTables.RemoveTable(table.TableName);
-                    }
-                    Players.RemoveByPlayerId(playerLeft.PlayerID);
+                    TableController table = new TableController(GameTables.All[playerLeft.TableName], OnStateUpdated);
+                    table.LeaveTable(playerLeft);
+                    if (table.TableEmpty) GameTables.RemoveTable(table.TableName);
                 }
-                else
-                {
-                    // Somtimes it is possible that the connection ID is not present in the list of players
-                    // This can happen if the player reconnects to the server and the connection ID is updated
-                    Console.WriteLine($"--> Disconnected orphan connection: '{ConnID}'");
-                }
+                Players.RemoveByPlayerId(playerLeft.PlayerID);
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e.Message);
+                // Somtimes it is possible that the connection ID is not present in the list of players
+                // This can happen if the player reconnects to the server and the connection ID is updated
+                Console.WriteLine($"--> Disconnected orphan connection: '{_ConnID}'");
             }
         }
         public TableController JoinTable(int tableType, string privateTableId)
