@@ -404,10 +404,13 @@ namespace Cards56Lib
                 Game.Chairs[Game.Bid.HighBidder].Cards.Add(Game.TrumpCard);
                 Game.Chairs[Game.Bid.HighBidder].Cards.Sort(T.CompareCards);
 
-                SendStateUpdatedEvents();
                 if (Game.Bid.HighBidder == player.Position)
                 {
                     PlayCard(player, Game.TrumpCard, roundOverDelay);
+                }
+                else
+                {
+                    SendStateUpdatedEvents();
                 }
             }
         }
