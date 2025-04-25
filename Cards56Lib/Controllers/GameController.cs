@@ -147,7 +147,7 @@ namespace Cards56Lib
         }
         public void ShowTrump(int roundOverDelay = 0)
         {
-            GetTableController().ShowTrump(GetCurrentPlayer());
+            GetTableController().ShowTrump(GetCurrentPlayer(), roundOverDelay);
         }
         public void StartNextGame()
         {
