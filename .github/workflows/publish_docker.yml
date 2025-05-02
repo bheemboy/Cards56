@@ -46,12 +46,12 @@ jobs:
         shell: bash
         run: |
           BRANCH=${GITHUB_REF#refs/heads/}
-          if [ "$BRANCH" = "master" ]; then
+          if [ "$BRANCH" = "main" ]; then
             echo "tag_suffix=" >> $GITHUB_OUTPUT
-            echo "using_master=true" >> $GITHUB_OUTPUT
+            echo "using_main=true" >> $GITHUB_OUTPUT
           else
             echo "tag_suffix=-${BRANCH}" >> $GITHUB_OUTPUT
-            echo "using_master=false" >> $GITHUB_OUTPUT
+            echo "using_main=false" >> $GITHUB_OUTPUT
           fi
      
       # Step 4: Set up QEMU emulation to build for different CPU architectures
@@ -100,9 +100,9 @@ jobs:
           cache-from: type=local,src=${{ env.BUILDX_CACHE_DIR }}
           cache-to: type=local,dest=${{ env.BUILDX_CACHE_DIR }}-new,mode=max
       
-      # Step 8: Also tag as latest (without suffix) if this is the master branch
-      - name: Tag as latest for master branch
-        if: steps.branch.outputs.using_master == 'true'
+      # Step 8: Also tag as latest (without suffix) if this is the main branch
+      - name: Tag as latest for main branch
+        if: steps.branch.outputs.using_main == 'true'
         uses: docker/build-push-action@v5
         with:
           context: .
