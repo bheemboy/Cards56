@@ -28,8 +28,11 @@ Once started you can access the game by browsing to http://localhost/
 
 1. Download and install asp.net core 8 sdk
 ```
-winget install Microsoft.DotNet.SDK.8
+winget install Microsoft.DotNet.SDK.8 
 ```
+
+winget install mlocati.GetText
+winget install pwsh
 
 2. Download and install Visual Studio Code
 ```

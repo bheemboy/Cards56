@@ -9,10 +9,32 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NGettext" Version="0.6.7" />
-    <Content Include="locale\**\*">
+
+    <None Update="locale\ml_IN\strings.po">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+
+    <Content Include="locale\ml_IN\LC_MESSAGES\strings.mo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
+
+  <Target Name="CompilePoToMo" BeforeTargets="Compile"> <Message Text="Compiling locale\ml_IN\strings.po to .mo file..." Importance="high" />
+
+    <PropertyGroup>
+      <SourcePoFile>$(MSBuildProjectDirectory)\locale\ml_IN\strings.po</SourcePoFile>
+      <TargetMoDir>$(MSBuildProjectDirectory)\locale\ml_IN\LC_MESSAGES</TargetMoDir>
+      <TargetMoFile>$(MSBuildProjectDirectory)\locale\ml_IN\LC_MESSAGES\strings.mo</TargetMoFile>
+    </PropertyGroup>
+
+    <MakeDir Directories="$([System.IO.Path]::Combine($(TargetMoDir)))" />
+
+    <Exec Command="msgfmt &quot;$([System.IO.Path]::Combine($(SourcePoFile)))&quot; -o &quot;$([System.IO.Path]::Combine($(TargetMoFile)))&quot;"
+          ContinueOnError="false" />
+
+    <Message Text="Finished compiling .mo file." Importance="high" />
+  </Target>
 
 </Project>

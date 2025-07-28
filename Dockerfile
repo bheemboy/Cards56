@@ -7,6 +7,10 @@
 # Stage 1 ##############################################################################
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /build
+# Install gettext here, as it's a build dependency for PO compilation
+RUN apt-get update && \
+    apt-get install -y gettext && \
+    rm -rf /var/lib/apt/lists/*
 COPY . .
 RUN dotnet publish Cards56Web.sln -c Release -o /webapp
 
