@@ -1,0 +1,1 @@
+This folder has commands and files used to host the app in oracle cloud. 
