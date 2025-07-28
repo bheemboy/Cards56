@@ -1,0 +1,19 @@
+{
+  "name": "Cards56 .NET Development",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:8.0",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "ms-vscode.vscode-json"
+      ]
+    }
+  },
+  "postCreateCommand": "apt-get update && apt-get install -y gettext && dotnet restore",
+  "forwardPorts": [5000, 5001]
+}
