@@ -1,7 +1,8 @@
 # Builds are made on github.com using workflows
 
 # Alternatively, the following commands can be used to build locally and push them to dockerhub
-# docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:$(Get-Date -Format "yyyy.MM.dd") .
+# [Bash] docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:$(date +"%Y.%m.%d") .
+# [PowerShell] docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:$(Get-Date -Format "yyyy.MM.dd") .
 # docker push --all-tags bheemboy/cards56web
 
 # Stage 1 ##############################################################################
