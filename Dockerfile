@@ -5,6 +5,16 @@
 # [PowerShell] docker build -t bheemboy/cards56web:latest -t bheemboy/cards56web:$(Get-Date -Format "yyyy.MM.dd") .
 # docker push --all-tags bheemboy/cards56web
 
+# Building in codespace
+# One time:
+#    docker buildx create --name mybuilder --use --bootstrap
+#    docker login
+#    docker info | grep -i username
+# Build:
+#    docker buildx build --load -t bheemboy/cards56web:latest -t bheemboy/cards56web:$(date +'%Y.%m.%d') .
+# Push:
+#    docker push --all-tags bheemboy/cards56web
+
 # Stage 1 ##############################################################################
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /build
