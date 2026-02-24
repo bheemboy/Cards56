@@ -23,9 +23,9 @@ namespace Cards56Lib
         public bool TableEmpty => Game.Chairs.TrueForAll(c => c.Occupant == null) && Game.Chairs.TrueForAll(c => c.Watchers.Count <= 0);
         private int[] NextBidderFromTeam => Game.Bid.NextBidderFromTeam;
         private int[] OutBidChance => Game.Bid.OutBidChance;
-        private int TeamScoreOf(int position) => Game.TeamScore[T.TeamOf(position)]; 
-        private bool CurrentRoundAllCardsPlayed => CurrentRound!.PlayedCards.Count >= (IsThani? T.PlayersPerTeam+1: T.MaxPlayers); 
-        private int CurrentRoundWinningTeam => CurrentRoundAllCardsPlayed ? CurrentRound!.Winner % 2 : -1; 
+        private int TeamScoreOf(int position) => Game.TeamScore[T.TeamOf(position)];
+        private bool CurrentRoundAllCardsPlayed => CurrentRound!.PlayedCards.Count >= (IsThani? T.PlayersPerTeam+1: T.MaxPlayers);
+        private int CurrentRoundWinningTeam => CurrentRoundAllCardsPlayed ? CurrentRound!.Winner % 2 : -1;
         public RoundInfo? CurrentRound => ((Game.Rounds?.Count ?? 0) > 0) ? Game.Rounds?.Last() : null;
         public char CurrentRoundSuit => ((CurrentRound?.PlayedCards.Count ?? 0) > 0)? CurrentRound!.PlayedCards[0][0] : ' ';
         public bool AllowBidPass => Game.Bid.HighBid>=28;
@@ -60,14 +60,14 @@ namespace Cards56Lib
 
                     int watchersMinCount = Game.Chairs.Min(c => c.Watchers.Count); // for round robin allocation
 
-                    Chair freeChair = Game.Chairs.First(c => player.WatchOnly? c.Watchers.Count<=watchersMinCount: c.Occupant==null); 
-                    if(!player.WatchOnly) 
+                    Chair freeChair = Game.Chairs.First(c => player.WatchOnly? c.Watchers.Count<=watchersMinCount: c.Occupant==null);
+                    if(!player.WatchOnly)
                     {
                         freeChair.Occupant = player;
                     }
                     else
                     {
-                        if (freeChair.Watchers.Count > 2) throw new TooManyWatchersOnChairException();
+                        if (freeChair.Watchers.Count >= 2) throw new TooManyWatchersOnChairException(); // Allow only upto 2 watchers
                         freeChair.Watchers.Add(player);
                     }
                     player.TableName = TableName;
@@ -78,7 +78,7 @@ namespace Cards56Lib
                 {
                     Console.WriteLine($"--> Player '{player.Name}({player.ConnID})' already on gametable: '{player.TableName}' @ position: {player.Position}");
                 }
-                
+
                 SendStateUpdatedEvents();
 
                 return player.Position;
@@ -86,7 +86,7 @@ namespace Cards56Lib
         }
         public string GetJsonState(Player player)
         {
-            var state = new 
+            var state = new
             {
                 PlayerPosition = player.Position,
                 PlayerID = player.PlayerID,
@@ -96,7 +96,7 @@ namespace Cards56Lib
                 PlayerCards = Game.Chairs[player.Position].Cards,
                 TrumpExposed = Game.TrumpExposed,
                 CurrentRoundSuit = CurrentRoundSuit,
-                // Include Trumpcard only after trump is exposed or the player is the highbidder 
+                // Include Trumpcard only after trump is exposed or the player is the highbidder
                 TrumpCard = ((player.Position==(Game.Bid?.HighBidder ?? -1)) || (Game.TrumpExposed))? Game.TrumpCard: "",
                 TableInfo = Game
             };
@@ -147,17 +147,17 @@ namespace Cards56Lib
                 }
 
                 // clear out the player from the table depeding on the player in proxy or not
-                if(!player.WatchOnly) 
+                if(!player.WatchOnly)
                 {
                     Game.Chairs[player.Position].Occupant = null;
                 }
-                else 
+                else
                 {
                     Game.Chairs[player.Position].Watchers.Remove(player);
                 }
                 player.TableName = "";
                 player.Position = -1;
-                
+
                 SendStateUpdatedEvents();
             }
         }
@@ -190,7 +190,7 @@ namespace Cards56Lib
                 if (Game.Stage > GameStage.Bidding) throw new BiddingOverException();
                 if (player.Position != Game.Bid.NextBidder) throw new NotPlayersTurnException(PlayerName(Game.Bid.NextBidder));
                 if (bid < Game.Bid.NextMinBid || bid > T.MaxBid) throw new BidOutOfRangeException(Game.Bid.NextMinBid, T.MaxBid);
-                
+
                 int LastHighBidder = Game.Bid.HighBidder;
 
                 // set high bid and highbidder
@@ -249,7 +249,7 @@ namespace Cards56Lib
                     {
                         Game.Stage = GameStage.SelectingTrump;
                     }
-                    // we are still bidding 
+                    // we are still bidding
                     else
                     {
                         // Update this players outbidchance
@@ -288,7 +288,7 @@ namespace Cards56Lib
                             // minimum is the minimum for the next stage after the high bid stage
                             Game.Bid.NextMinBid = Math.Max(Game.Bid.HighBid+1, T.NextMinBidAfterBid(Game.Bid.HighBid));
                         }
-                        // next bidder is not from the current highbid team 
+                        // next bidder is not from the current highbid team
                         else
                         {
                             // minimum is the higher of current highbid+1 or the minimum for his next stage
@@ -381,9 +381,9 @@ namespace Cards56Lib
                 if (CurrentRound!.NextPlayer != player.Position) throw new NotPlayersTurnException(PlayerName(CurrentRound.NextPlayer));
                 if (Game.TrumpExposed) throw new TrumpAlreadyExposedException();
 
-                // 1. First player in the round cannot ask to show trump 
+                // 1. First player in the round cannot ask to show trump
                 //    Unless the player is the high bidder and he has only the trump card
-                if (player.Position == CurrentRound.FirstPlayer) 
+                if (player.Position == CurrentRound.FirstPlayer)
                 {
                     if (!(player.Position == Game.Bid.HighBidder && CardsAt(player.Position).Count <= 1))
                         throw new FirstPlayerCannotShowTrumpException();
@@ -450,12 +450,12 @@ namespace Cards56Lib
             if (!CardsAt(player.Position).Contains(card)) throw new CardNotFoundException();
 
             // 2nd, 3rd and 4th players must play matching suit if they have it
-            if (CurrentRound.FirstPlayer != player.Position && CurrentRoundSuit != card[0]) 
+            if (CurrentRound.FirstPlayer != player.Position && CurrentRoundSuit != card[0])
             {
                 // if the player has cards of matching suit
                 string? anotherCard = CardsAt(player.Position).Find(s => s[0] == CurrentRoundSuit);
                 if (!string.IsNullOrEmpty(anotherCard))
-                {    
+                {
                     throw new CardNotOfRoundSuitException(T.GetSuitName(CurrentRoundSuit));
                 }
             }
@@ -486,7 +486,7 @@ namespace Cards56Lib
                         // 1. The bidder must play the trump card itself.
                         if (!card.Equals(Game.TrumpCard)) throw new MustPlayTheTrumpCardException(Game.TrumpCard);
                     }
-                    else 
+                    else
                     {
                         // 2. the exposing player must play a trump card if he has one.
                         string? trumpCard = CardsAt(player.Position).Find(s => s[0] == Game.TrumpCard[0]);
@@ -528,12 +528,12 @@ namespace Cards56Lib
                 if (player.WatchOnly) throw new WatcherCannotForfeitException();
                 if (Game.Stage < GameStage.PlayingCards) throw new GameNotStartedException();
                 if (Game.Stage > GameStage.PlayingCards) throw new GameIsOverException();
-                
-                // Give opposite team all points
-                Game.TeamScore[T.TeamOf(player.Position)] = 0; 
-                Game.TeamScore[T.TeamOf(player.Position+1)] = IsThani? 8: 56; 
 
-                // Set the Forfeited flag 
+                // Give opposite team all points
+                Game.TeamScore[T.TeamOf(player.Position)] = 0;
+                Game.TeamScore[T.TeamOf(player.Position+1)] = IsThani? 8: 56;
+
+                // Set the Forfeited flag
                 Game.GameForfeited = true;
 
                 ProcessGame();
@@ -543,8 +543,8 @@ namespace Cards56Lib
         }
         private void ProcessRound(int cardroundOverDelay)
         {
-            Game.RoundOver = CurrentRoundAllCardsPlayed; 
-            
+            Game.RoundOver = CurrentRoundAllCardsPlayed;
+
             if (Game.RoundOver)
             {
                 // CurrentRound.NextPlayer = -1;
@@ -582,7 +582,7 @@ namespace Cards56Lib
             for(int i = 1; i < CurrentRound.PlayedCards.Count; i++)
             {
                 string playerCard = CurrentRound.PlayedCards[i];
-                
+
                 // If player card is the same suit, just check the rank
                 if (winnerCard[0] == playerCard[0])
                 {
@@ -595,19 +595,19 @@ namespace Cards56Lib
                 // playerCard is the first trumpCard in this round, change the winner
                 else if (!IsThani)
                 {
-                    if (CurrentRound.TrumpExposed[i] && 
+                    if (CurrentRound.TrumpExposed[i] &&
                         (CurrentRound.PlayedCards[i].StartsWith(Game.TrumpCard[0].ToString())))
                     {
                         winner = i;
                         winnerCard = playerCard;
                     }
-                } 
+                }
             }
             if (IsThani)
             {
                 if (winner != 0) // Winner is someone from the other team
                 {
-                    winner = winner*2-1; // get the player's actual player position from the play order  
+                    winner = winner*2-1; // get the player's actual player position from the play order
                 }
             }
             CurrentRound.Winner = T.PlayerAt((winner + CurrentRound.FirstPlayer));
@@ -665,7 +665,7 @@ namespace Cards56Lib
                 //Update game stage
                 Game.Stage = GameStage.GameOver;
 
-                // determine the winning team 
+                // determine the winning team
                 if (IsThani)
                 {
                     Game.WinningTeam = (TeamScoreOf(Game.Bid.HighBidder) >= 8) ? T.TeamOf(Game.Bid.HighBidder) : T.TeamOf(Game.Bid.HighBidder+1);
@@ -690,8 +690,8 @@ namespace Cards56Lib
                     Game.CoolieCount[T.TeamOf(Game.Bid.HighBidder+1)] += Game.WinningScore;
                 }
 
-                // Remove Kodis for the entire team if it is a KodiIrakkamRound, or just for bidder  
-                if (bidderWon) 
+                // Remove Kodis for the entire team if it is a KodiIrakkamRound, or just for bidder
+                if (bidderWon)
                 {
                     if (Game.KodiIrakkamRound[T.TeamOf(Game.Bid.HighBidder)])
                     {
@@ -705,8 +705,8 @@ namespace Cards56Lib
                         RemoveKodi(Game.Bid.HighBidder);
                     }
                 }
-                
-                // reset KodiIrakkamRound 
+
+                // reset KodiIrakkamRound
                 Game.KodiIrakkamRound = new List<bool>(){false, false};
 
                 // Install kodis for team with no coolies
@@ -737,7 +737,7 @@ namespace Cards56Lib
         }
         private void AutoPlayWhenPosible()
         {
-            if (!IsThani) // Autoplay works for thani also, but do not enable it - because it is more fun to play it out. 
+            if (!IsThani) // Autoplay works for thani also, but do not enable it - because it is more fun to play it out.
             {
                 if (CurrentRound!.PlayedCards.Count == 0) // this is a new round
                 {
@@ -769,7 +769,7 @@ namespace Cards56Lib
 
                     // Check if PlayerAt(posn+i) has bigger cards
                     if (!CardsAt(posn).TrueForAll(NextPlayersCard =>
-                            CardsAt(T.PlayerAt(posn+i)).TrueForAll(card => 
+                            CardsAt(T.PlayerAt(posn+i)).TrueForAll(card =>
                             (NextPlayersCard[0] != card[0]) || (T.CompareRank(NextPlayersCard, card) <= 0)))) return false;
                     // System.Console.WriteLine($"--player {T.PlayerAt(posn+i)} has all lower cards.");
                 }
@@ -779,11 +779,11 @@ namespace Cards56Lib
         private void AutoPlayNextRound(int posn)
         {
             string FirstCard = CardsAt(T.PlayerAt(posn)).First();
-            
+
             // Add cards from other players
             for (int i = 0; i < T.MaxPlayers; i++)
             {
-                // If thani skip team members 
+                // If thani skip team members
                 if (i==0 || !IsThani || !T.SameTeam(posn, posn+i))
                 {
                     string? card = CardsAt(T.PlayerAt(posn+i)).FirstOrDefault(c2 => c2[0]==FirstCard[0]);
